@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28803.452
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SuperTotoFathers", "SuperTotoFathers\SuperTotoFathers.vcxproj", "{1342694A-5635-4662-942F-2C31F4CEE0D0}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1342694A-5635-4662-942F-2C31F4CEE0D0}.Debug|x64.ActiveCfg = Debug|x64
+		{1342694A-5635-4662-942F-2C31F4CEE0D0}.Debug|x64.Build.0 = Debug|x64
+		{1342694A-5635-4662-942F-2C31F4CEE0D0}.Debug|x86.ActiveCfg = Debug|Win32
+		{1342694A-5635-4662-942F-2C31F4CEE0D0}.Debug|x86.Build.0 = Debug|Win32
+		{1342694A-5635-4662-942F-2C31F4CEE0D0}.Release|x64.ActiveCfg = Release|x64
+		{1342694A-5635-4662-942F-2C31F4CEE0D0}.Release|x64.Build.0 = Release|x64
+		{1342694A-5635-4662-942F-2C31F4CEE0D0}.Release|x86.ActiveCfg = Release|Win32
+		{1342694A-5635-4662-942F-2C31F4CEE0D0}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A193808E-015E-4F4D-B447-6A322D6200C2}
+	EndGlobalSection
+EndGlobal
