@@ -12,6 +12,8 @@ public:
 
 	unsigned int GetNumIndices() const { return mNumIndices; }
 	unsigned int GetNumVerts() const { return mNumVerts; }
+
+	void ChangeVBO(float* changeData);
 private:
 	// How many vertices in the vertex buffer?
 	unsigned int mNumVerts;

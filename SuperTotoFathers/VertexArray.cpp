@@ -42,3 +42,25 @@ void VertexArray::SetActive()
 {
 	glBindVertexArray(mVertexArray);
 }
+
+void VertexArray::ChangeVBO(float* changeData)
+{
+	glBindBuffer(GL_ARRAY_BUFFER, mVertexBuffer);
+	float* ptr = (float*)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
+
+	if (ptr)
+	{
+		for (int i = 0; i < 5; i++)
+		{
+			ptr[5 * i + 0] = changeData[5 * i + 0];
+			ptr[5 * i + 1] = changeData[5 * i + 1];
+			ptr[5 * i + 2] = changeData[5 * i + 2];
+			ptr[5 * i + 3] = changeData[5 * i + 3];
+			ptr[5 * i + 4] = changeData[5 * i + 4];
+		}
+
+		glUnmapBuffer(GL_ARRAY_BUFFER);
+	}
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+}

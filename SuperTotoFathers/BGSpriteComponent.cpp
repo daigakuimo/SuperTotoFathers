@@ -27,7 +27,7 @@ void BGSpriteComponent::Update(float deltaTime)
 	}
 }
 
-void BGSpriteComponent::Draw(class Shader* shader)
+void BGSpriteComponent::Draw(class Shader* shader, class VertexArray* vertex)
 {
 	// Scale the quad by the width/height of texture
 	Matrix4 scaleMat = Matrix4::CreateScale(

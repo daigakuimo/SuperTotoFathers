@@ -8,7 +8,7 @@
 #include "Random.h"
 #include "Texture.h"
 #include "Player.h"
-#include "BGSpriteComponent.h"
+#include "TileMapComponent.h"
 
 const int   thickness = 15;
 const float paddleH = 100.0f;
@@ -184,11 +184,12 @@ void Game::GenerateOutput()
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	// Set shader/vao as active
+
 	mSpriteShader->SetActive();
 	mSpriteVerts->SetActive();
 	for (auto sprite : mSprites)
 	{
-		sprite->Draw(mSpriteShader);
+		sprite->Draw(mSpriteShader, mSpriteVerts);
 	}
 
 	// Swap the buffers
@@ -233,29 +234,14 @@ void Game::LoadData()
 	mPlayer->SetPosition(Vector2(0.0f, 0.0f));
 	mPlayer->SetScale(1.0f);
 
-	/*
+	
 	Actor* temp = new Actor(this);
-	temp->SetPosition(Vector2(512.0f, 384.0f));
-	// Create the "far back" background
-	BGSpriteComponent* bg = new BGSpriteComponent(temp);
-	bg->SetScreenSize(Vector2(1024.0f, 768.0f));
-	std::vector<class Texture*> bgtexs = {
-		GetTexture("../Assets/Farback01.png"),
-		GetTexture("../Assets/Farback02.png")
-	};
-	bg->SetBGTextures(bgtexs);
-	bg->SetScrollSpeed(-100.0f);
-
-	// Create the closer background
-	bg = new BGSpriteComponent(temp, 50);
-	bg->SetScreenSize(Vector2(1024.0f, 768.0f));
-	bgtexs = {
-		GetTexture("../Assets/Stars.png"),
-		GetTexture("../Assets/Stars.png")
-	};
-	bg->SetBGTextures(bgtexs);
-	bg->SetScrollSpeed(-200.0f);
-	*/
+	temp->SetPosition(Vector2(0.0f, 0.0f));
+	// Create the tile map
+	TileMapComponent* tm = new TileMapComponent(temp);
+	class Texture* tiletex = GetTexture("../Assets/Brock.png");
+	tm->SetTileMap(tiletex);
+	
 }
 
 void Game::UnloadData()

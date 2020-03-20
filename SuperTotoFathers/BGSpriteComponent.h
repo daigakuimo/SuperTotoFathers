@@ -11,7 +11,7 @@ public:
 
 	// Update/draw override from parent
 	void Update(float deltaTime) override;
-	void Draw(class Shader* shader) override;
+	void Draw(class Shader* shader, class VertexArray* vertex) override;
 
 	// Set the textures used for the background
 	void SetBGTextures(const std::vector<class Texture*>& textures);

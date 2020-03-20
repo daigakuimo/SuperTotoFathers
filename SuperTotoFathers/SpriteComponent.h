@@ -9,7 +9,7 @@ public:
 	SpriteComponent(Actor* owner, int drawOrder = 100);
 	~SpriteComponent();
 
-	virtual void Draw(class Shader* shader);
+	virtual void Draw(class Shader* shader, class VertexArray* vertex);
 	virtual void SetTexture(class Texture* texture);
 
 	int GetDrawOrder() const { return mDrawOrder; }
