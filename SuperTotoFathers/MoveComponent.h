@@ -21,6 +21,12 @@ public:
 	Vector2 GetSumOfForce() const { return mSumOfForces; }
 	void SetSumOfForce(Vector2 sumOfForce) { mSumOfForces = sumOfForce; }
 
+	void SetIsPushJumpKey(bool pushKey) { mIsPushJumpKey = pushKey; }
+	void SetJumpPower(float jumpPower) { mJumpPower = jumpPower; }
+	bool GetCanJump() const { return mCanJump; }
+	void SetMaxJumpHeight(float height) { mMaxJumpHeight = height; }
+	float GetMaxJump() const { return mMaxJumpHeight; }
+
 
 private:
 	// Controls rotation (radians/second)
@@ -28,6 +34,9 @@ private:
 
 	// Controls forward movement (units/second)
 	Vector2 mForwardSpeed;
+
+	// Previous actor position
+	Vector2 mPrevPosition;
 
 	// mass
 	float mMass;
@@ -49,6 +58,21 @@ private:
 
 	// accleration
 	Vector2 mForwardAcceleration;
+
+	// The maximum jump height
+	float mMaxJumpHeight;
+
+	// can jump flag
+	bool mCanJump;
+
+	// now jumping flag
+	bool mIsJumping;
+
+	// push jump key
+	bool mIsPushJumpKey;
+
+	// Jump power
+	float mJumpPower;
 
 
 };

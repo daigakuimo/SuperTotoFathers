@@ -5,8 +5,8 @@ InputComponent::InputComponent(class Actor* owner, float mass, Vector2 velocityL
 	:MoveComponent(owner, mass, velocityLimit, isGravity)
 	, mForwardKey(0)
 	, mBackKey(0)
-	, mClockwiseKey(0)
-	, mCounterClockwiseKey(0)
+	, mJumpKey(0)
+	, mIsPrevJumpKey(false)
 {
 
 }
@@ -26,15 +26,19 @@ void InputComponent::ProcessInput(const uint8_t* keyState)
 	AddForce(force);
 	//SetForwardSpeed(force);
 
-	// Calculate angular speed for MoveComponent
-	float angularSpeed = 0.0f;
-	if (keyState[mClockwiseKey])
+	// Calculate jump 
+	SetIsPushJumpKey(false);
+	if (keyState[mJumpKey])
 	{
-		angularSpeed += mMaxAngularSpeed;
+		if (GetCanJump() && !mIsPrevJumpKey)
+		{
+			SetIsPushJumpKey(true);
+			SetJumpPower(180.0f);
+		}
+		SetPrevJumpKey(true);
 	}
-	if (keyState[mCounterClockwiseKey])
+	else
 	{
-		angularSpeed -= mMaxAngularSpeed;
+		SetPrevJumpKey(false);
 	}
-	SetAngularSpeed(angularSpeed);
 }

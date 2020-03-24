@@ -236,7 +236,7 @@ void Game::LoadData()
 
 	
 	Actor* temp = new Actor(this);
-	temp->SetPosition(Vector2(0.0f, 0.0f));
+	temp->SetPosition(Vector2(32.0f, 32.0f));
 	// Create the tile map
 	TileMapComponent* tm = new TileMapComponent(temp);
 	class Texture* tiletex = GetTexture("../Assets/Brock.png");

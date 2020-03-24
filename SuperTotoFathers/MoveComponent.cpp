@@ -16,22 +16,57 @@ MoveComponent::MoveComponent(class Actor* owner, float mass, Vector2 velocityLim
 
 void MoveComponent::Update(float deltaTime)
 {
+
+	Vector2 pos = mOwner->GetPosition();
+
 	if (mIsGravity)
 	{
 		AddForce(mGrabityPower);
 	}
 
 
-	if (!Math::NearZero(mForwardSpeed.Length()) || !Math::NearZero(mSumOfForces.Length()))
+	if (!Math::NearZero(mForwardSpeed.Length()) || !Math::NearZero(mSumOfForces.Length()) || !Math::NearZero(mJumpPower))
 	{
-
-		Vector2 pos = mOwner->GetPosition();
 
 		// udate acceleration from amount of force
 		mForwardAcceleration = mSumOfForces * (1.0f / mMass);
 
 		// update speed
 		mForwardSpeed += mForwardAcceleration * deltaTime;
+
+		// jump action
+		if (mIsPushJumpKey || mIsJumping)
+		{
+			if (mIsPushJumpKey)
+			{
+				mPrevPosition = pos;
+				mIsJumping = true;
+				mCanJump = false;
+			}
+
+			float tempPosY = (pos.y + 384.0f) - (mPrevPosition.y + 384.0f);
+
+			SDL_Log("jump : %3.3f : %3.3f", tempPosY, mMaxJumpHeight);
+			
+
+			if (tempPosY >= mMaxJumpHeight && mJumpPower > 0)
+			{
+				mJumpPower = 0;
+				SDL_Log("aaa");
+			}
+
+			mForwardSpeed.y = mJumpPower;
+			mJumpPower -= 5;
+			if (mJumpPower < 0)
+			{
+				mJumpPower -= 6;
+			}
+			if (mJumpPower < 40)
+			{
+				mJumpPower -= 5;
+			}
+			// Todo : XŽ²ˆÚ“®‚µ‚·‚¬‚â‚©‚ç•ÏX‚·‚é
+		}
 
 		// limit speed
 		if (mForwardSpeed.x > mVelocityLimit.x)
@@ -51,23 +86,27 @@ void MoveComponent::Update(float deltaTime)
 			mForwardSpeed.y = -mVelocityLimit.y;
 		}
 
+
 		// Adjust inertia
 
 		// case stop
-		if (mForwardSpeed.x > 0 && mSumOfForces.x == 0)
+		if (!mIsJumping)
 		{
-			mForwardSpeed.x *= 0.95f;
-			if (mForwardSpeed.x <= 10)
+			if (mForwardSpeed.x > 0 && mSumOfForces.x == 0)
 			{
-				mForwardSpeed.x = 0;
+				mForwardSpeed.x *= 0.95f;
+				if (mForwardSpeed.x <= 10)
+				{
+					mForwardSpeed.x = 0;
+				}
 			}
-		}
-		else if (mForwardSpeed.x < 0 && mSumOfForces.x == 0)
-		{
-			mForwardSpeed.x *= 0.95f;
-			if (mForwardSpeed.x >= -10)
+			else if (mForwardSpeed.x < 0 && mSumOfForces.x == 0)
 			{
-				mForwardSpeed.x = 0;
+				mForwardSpeed.x *= 0.95f;
+				if (mForwardSpeed.x >= -10)
+				{
+					mForwardSpeed.x = 0;
+				}
 			}
 		}
 
@@ -90,7 +129,13 @@ void MoveComponent::Update(float deltaTime)
 		if (pos.x < -512.0f) { pos.x = 510.0f; }
 		else if (pos.x > 512.0f) { pos.x = -510.0f; }
 
-		if (pos.y < -352.0f) { pos.y = -352.0f; }
+		if (pos.y < -224.0f) 
+		{ 
+			pos.y = -224.0f; 
+			mJumpPower = 0;
+			mIsJumping = false;
+			mCanJump = true;
+		}
 		else if (pos.y > 352.0f) { pos.y = 352.0f; }
 
 		mOwner->SetPosition(pos);

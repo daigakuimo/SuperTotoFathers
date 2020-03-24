@@ -16,8 +16,9 @@ Player::Player(Game* game)
 	InputComponent* ic = new InputComponent(this, 1.0f, Vector2(400.0f,400.0f));
 	ic->SetForwardKey(SDL_SCANCODE_D);
 	ic->SetBackKey(SDL_SCANCODE_A);
-	ic->SetMaxForwardSpeed(500.0f);
-	ic->SetMaxAngularSpeed(Math::TwoPi);
+	ic->SetJumpKey(SDL_SCANCODE_SPACE);
+	ic->SetMaxJumpHeight(124.0f);
+
 }
 
 void Player::UpdateActor(float deltaTime)
