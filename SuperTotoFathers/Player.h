@@ -10,5 +10,9 @@ public:
 	void ActorInput(const uint8_t* keyState) override;
 
 private:
-	
+	// constant of action
+	const int mACTION_STOP = 0;
+	const int mACTION_WALK = 1;
+
+	class InputComponent* ic;
 };

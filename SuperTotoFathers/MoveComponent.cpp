@@ -1,16 +1,20 @@
 #include "MoveComponent.h"
 #include "Actor.h"
+#include "Game.h"
 #include <SDL_log.h>
+#include "CameraActor.h"
+
 
 int count = 0;
 
-MoveComponent::MoveComponent(class Actor* owner, float mass, Vector2 velocityLimit, bool isGravity, int updateOrder)
+MoveComponent::MoveComponent(class Actor* owner,int updateOrder)
 	:Component(owner, updateOrder)
 	,mAngularSpeed(0.0f)
 	,mForwardSpeed(Vector2::Zero)
-	,mMass(mass)
-	,mVelocityLimit(velocityLimit)
-	, mIsGravity(isGravity)
+	,mMass(0.f)
+	,mVelocityLimit(0.f,0.f)
+	,timeCount(0)
+	, mIsGravity(false)
 {
 }
 
@@ -24,15 +28,27 @@ void MoveComponent::Update(float deltaTime)
 		AddForce(mGrabityPower);
 	}
 
-
 	if (!Math::NearZero(mForwardSpeed.Length()) || !Math::NearZero(mSumOfForces.Length()) || !Math::NearZero(mJumpPower))
 	{
+		if (!Math::NearZero(mSumOfForces.Length()))
+		{
+			timeCount++;
+			if (timeCount > 30)
+			{
+				// sin‚ÍPi/2‚ÌŽž‚ÉÅ‘å’l‚P‚É‚È‚é‚©‚ç30‚Ü‚Å
+				timeCount = 30;
+			}
+		}
+		else
+		{
+			timeCount = 0;
+		}
 
 		// udate acceleration from amount of force
 		mForwardAcceleration = mSumOfForces * (1.0f / mMass);
 
 		// update speed
-		mForwardSpeed += mForwardAcceleration * deltaTime;
+		mForwardSpeed += mForwardAcceleration * sin(Math::Pi * 1/60 * timeCount) * deltaTime;
 
 		// jump action
 		if (mIsPushJumpKey || mIsJumping)
@@ -45,27 +61,22 @@ void MoveComponent::Update(float deltaTime)
 			}
 
 			float tempPosY = (pos.y + 384.0f) - (mPrevPosition.y + 384.0f);
-
-			SDL_Log("jump : %3.3f : %3.3f", tempPosY, mMaxJumpHeight);
 			
-
 			if (tempPosY >= mMaxJumpHeight && mJumpPower > 0)
 			{
 				mJumpPower = 0;
-				SDL_Log("aaa");
 			}
 
 			mForwardSpeed.y = mJumpPower;
-			mJumpPower -= 5;
+			mJumpPower -= 9;
 			if (mJumpPower < 0)
 			{
-				mJumpPower -= 6;
+				mJumpPower -= 9;
 			}
 			if (mJumpPower < 40)
 			{
-				mJumpPower -= 5;
+				mJumpPower -= 6;
 			}
-			// Todo : XŽ²ˆÚ“®‚µ‚·‚¬‚â‚©‚ç•ÏX‚·‚é
 		}
 
 		// limit speed
@@ -86,49 +97,53 @@ void MoveComponent::Update(float deltaTime)
 			mForwardSpeed.y = -mVelocityLimit.y;
 		}
 
-
-		// Adjust inertia
-
 		// case stop
 		if (!mIsJumping)
 		{
 			if (mForwardSpeed.x > 0 && mSumOfForces.x == 0)
 			{
-				mForwardSpeed.x *= 0.95f;
-				if (mForwardSpeed.x <= 10)
+				mForwardSpeed.x *= 0.93f;
+				if (mForwardSpeed.x <= 30)
 				{
 					mForwardSpeed.x = 0;
 				}
 			}
 			else if (mForwardSpeed.x < 0 && mSumOfForces.x == 0)
 			{
-				mForwardSpeed.x *= 0.95f;
-				if (mForwardSpeed.x >= -10)
+				mForwardSpeed.x *= 0.93f;
+				if (mForwardSpeed.x >= -30)
 				{
 					mForwardSpeed.x = 0;
 				}
+			}
+		}
+		else
+		{
+			if (mForwardSpeed.x > 0 && mSumOfForces.x == 0)
+			{
+				mForwardSpeed.x *= 0.96f;
+			}
+			else if (mForwardSpeed.x < 0 && mSumOfForces.x == 0)
+			{
+				mForwardSpeed.x *= 0.96f;
 			}
 		}
 
 		// case return
 		if (mForwardSpeed.x > 0 && mSumOfForces.x < 0)
 		{
-			mForwardSpeed.x *= 0.95f;
+			mForwardSpeed.x *= 0.92f;
 		}
 		if (mForwardSpeed.x < 0 && mSumOfForces.x > 0)
 		{
-			mForwardSpeed.x *= 0.95f;
+			mForwardSpeed.x *= 0.92f;
 		}
 
 		mSumOfForces = Vector2::Zero;
 
 		// pos += mOwner->GetForward() * mForwardSpeed * deltaTime;
 		pos += mForwardSpeed * deltaTime;
-
-		// (Screen wrapping code only for asteroids)
-		if (pos.x < -512.0f) { pos.x = 510.0f; }
-		else if (pos.x > 512.0f) { pos.x = -510.0f; }
-
+		
 		if (pos.y < -224.0f) 
 		{ 
 			pos.y = -224.0f; 
@@ -136,7 +151,6 @@ void MoveComponent::Update(float deltaTime)
 			mIsJumping = false;
 			mCanJump = true;
 		}
-		else if (pos.y > 352.0f) { pos.y = 352.0f; }
 
 		mOwner->SetPosition(pos);
 	}

@@ -6,7 +6,7 @@ class MoveComponent : public Component
 {
 public:
 	// Lower update order to update first
-	MoveComponent(class Actor* owner, float mass, Vector2 velocityLimit, bool isGravity = true,  int updateOrder = 10);
+	MoveComponent(class Actor* owner,  int updateOrder = 10);
 
 	void Update(float deltaTime) override;
 
@@ -26,6 +26,10 @@ public:
 	bool GetCanJump() const { return mCanJump; }
 	void SetMaxJumpHeight(float height) { mMaxJumpHeight = height; }
 	float GetMaxJump() const { return mMaxJumpHeight; }
+
+	void SetMass(float mass) { mMass = mass; }
+	void SetIsGravity(bool isGravity) { mIsGravity = isGravity; }
+	void SetVelocityLimit(Vector2 limit) { mVelocityLimit = limit; }
 
 
 private:
@@ -74,5 +78,5 @@ private:
 	// Jump power
 	float mJumpPower;
 
-
+	int timeCount;
 };

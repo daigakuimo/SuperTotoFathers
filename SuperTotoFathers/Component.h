@@ -16,6 +16,8 @@ public:
 
 	virtual void OnUpdateWorldTransform() {}
 
+	class Actor* GetOwner() { return mOwner; }
+
 
 protected:
 	class Actor* mOwner;

@@ -1,8 +1,8 @@
 #include "InputComponent.h"
 #include "Actor.h"
 
-InputComponent::InputComponent(class Actor* owner, float mass, Vector2 velocityLimit, bool isGravity)
-	:MoveComponent(owner, mass, velocityLimit, isGravity)
+InputComponent::InputComponent(class Actor* owner)
+	:MoveComponent(owner)
 	, mForwardKey(0)
 	, mBackKey(0)
 	, mJumpKey(0)
@@ -33,7 +33,7 @@ void InputComponent::ProcessInput(const uint8_t* keyState)
 		if (GetCanJump() && !mIsPrevJumpKey)
 		{
 			SetIsPushJumpKey(true);
-			SetJumpPower(180.0f);
+			SetJumpPower(250.0f);
 		}
 		SetPrevJumpKey(true);
 	}

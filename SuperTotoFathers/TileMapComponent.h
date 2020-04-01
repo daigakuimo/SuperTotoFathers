@@ -31,12 +31,12 @@ private:
 
 
 	class Texture* mTileTexture;
-	std::vector<std::vector<int>> mTileSets;
+	std::vector<std::vector<std::vector<int>>> mTileSets;
 
 	int mDrawOrder;
 
 	// All tile map
-	std::vector<std::vector<tileMapVertex>> mMapDatas;
+	std::vector<std::vector<std::vector<tileMapVertex>>> mMapDatas;
 
 	// width/height of tile set 
 	int mTexWidth;
@@ -49,4 +49,8 @@ private:
 	// width/height of map
 	const float MAP_HEIGHT = 12;
 	const float MAP_WIDTH = 16;
+
+
+	// •`‰æ‚·‚éƒ^ƒCƒ‹‚Ìˆê”Ô¶‚ÌXÀ•W
+	int mScreenTileX;
 };

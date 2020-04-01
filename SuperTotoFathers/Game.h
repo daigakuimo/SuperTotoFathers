@@ -22,6 +22,9 @@ public:
 	void RemoveSprite(class SpriteComponent* sprite);
 
 	class Texture* GetTexture(const std::string& fileName);
+	class Shader* GetShader() { return mSpriteShader; }
+	class CameraActor* GetCameraActor() { return mCameraActor; }
+
 
 private:
 	void ProcessInput();
@@ -51,4 +54,9 @@ private:
 	bool mUpdatingActors;
 
 	class Player* mPlayer;
+
+	class Goomba* mGoomba;
+
+	// Game-specific code
+	class CameraActor* mCameraActor;
 };
