@@ -26,6 +26,8 @@ public:
 	// Returns true if it collides against a box
 	bool SegmentCast(const LineSegment& l, CollisionInfo& outColl);
 
+	bool AvoidActorSegmentCast(const LineSegment& l, CollisionInfo& outColl, class Actor* avoidActor);
+
 	// Tests collisions using naive pairwise
 	void TestPairwise(std::function<void(class Actor*, class Actor*)> f);
 	// Test collisions using sweep and prune

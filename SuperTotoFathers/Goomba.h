@@ -12,4 +12,8 @@ public:
 private:
 	class MoveComponent* mc;
 	Vector2 moveSpeed;
+
+	class BoxComponent* mBoxComp;
+
+	const float mDOWN_SEGMENT_LENGTH = 39.0f;
 };

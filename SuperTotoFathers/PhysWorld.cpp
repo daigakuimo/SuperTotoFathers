@@ -1,6 +1,7 @@
 #include "PhysWorld.h"
 #include <algorithm>
 #include "BoxComponent.h"
+#include "Actor.h"
 #include <SDL.h>
 
 PhysWorld::PhysWorld(Game* game)
@@ -38,6 +39,43 @@ bool PhysWorld::SegmentCast(const LineSegment& l, CollisionInfo& outColl)
 	return collided;
 }
 
+bool PhysWorld::AvoidActorSegmentCast(const LineSegment& l, CollisionInfo& outColl, class Actor* avoidActor)
+{
+	bool collided = false;
+	// Initialize closestT infinity, so first
+	// intersection will always update closestT
+	float closestT = Math::Infinity;
+	Vector3 norm;
+	// Test against all boxes
+	// SDL_Log("start");
+	//SDL_Log("line minX : %3.3f, maxX : %3.3f, minY :%3.3f, maxY : %3.3f", l.mStart.x, l.mEnd.x, l.mStart.y, l.mEnd.y);
+	for (auto box : mBoxes)
+	{
+		float t;
+		if (avoidActor == box->GetOwner())
+		{
+			continue;
+		}
+
+		//SDL_Log("box minX : %3.3f, maxX : %3.3f, minY :%3.3f, maxY : %3.3f", box->GetWorldBox().mMin.x, box->GetWorldBox().mMax.x, box->GetWorldBox().mMin.y, box->GetWorldBox().mMax.y);
+		// Does the segment intersect with the box?
+		if (Intersect(l, box->GetWorldBox(), t, norm))
+		{
+			// Is this closer than previous intersection 
+			if (t < closestT)
+			{
+				outColl.mPoint = l.PointOnSegment(t);
+				outColl.mNormal = norm;
+				outColl.mBox = box;
+				outColl.mActor = box->GetOwner();
+				collided = true;
+			}
+		}
+	}
+
+	return collided;
+}
+
 void PhysWorld::TestPairwise(std::function<void(Actor*, Actor*)> f)
 {
 	// Naive implementation O(n^2)
@@ -48,7 +86,7 @@ void PhysWorld::TestPairwise(std::function<void(Actor*, Actor*)> f)
 		{
 			BoxComponent* a = mBoxes[i];
 			BoxComponent* b = mBoxes[j];
-			if (Intersect(a->GetWorldBox(), b->GetWorldBox))
+			if (Intersect(a->GetWorldBox(), b->GetWorldBox()))
 			{
 				// Call supplied function to handle intersection
 				f(a->GetOwner(), b->GetOwner());

@@ -2,6 +2,7 @@
 #include "SpriteComponent.h"
 #include <unordered_map>
 #include <vector>
+#include "Actor.h"
 
 class AnimSpriteComponent : public SpriteComponent
 {
@@ -14,14 +15,14 @@ public:
 
 	float GetAnimFPS() const { return mAnimFPS; }
 	void  SetAnimFPS(float fps) { mAnimFPS = fps; }
-	void  SetAnimRange(const std::string& action, int minRange, int maxRange, bool isRoop);
+	void  SetAnimRange(Actor::ActionState state, int minRange, int maxRange, bool isRoop);
 
 private:
 
 	// Animation range
 	struct AnimRange
 	{
-		std::string actionName;
+		Actor::ActionState state;
 		int         minRange;
 		int         maxRange;
 		bool        isRoop;

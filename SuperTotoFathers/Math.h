@@ -337,6 +337,15 @@ public:
 		return *this;
 	}
 
+	friend bool operator==(const Vector3& left, const Vector3& right)
+	{
+		if (left.x == right.x && left.y == right.y && left.z == right.z)
+		{
+			return true;
+		}
+		return false;
+	}
+
 	// Length squared of vector
 	float LengthSq() const
 	{

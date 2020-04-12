@@ -23,7 +23,9 @@ void MoveComponent::Update(float deltaTime)
 
 	Vector2 pos = mOwner->GetPosition();
 
-	if (mIsGravity)
+	Actor::ActionState currentAction = mOwner->GetActionState();
+
+	if (mIsGravity && !(currentAction == Actor::ActionState::EStop || currentAction == Actor::ActionState::EWalk))
 	{
 		AddForce(mGrabityPower);
 	}
@@ -68,14 +70,17 @@ void MoveComponent::Update(float deltaTime)
 			}
 
 			mForwardSpeed.y = mJumpPower;
-			mJumpPower -= 9;
 			if (mJumpPower < 0)
 			{
-				mJumpPower -= 9;
+				mJumpPower -= 50;
 			}
-			if (mJumpPower < 40)
+			else if (mJumpPower < 100)
 			{
-				mJumpPower -= 6;
+				mJumpPower -= 40;
+			}
+			else
+			{
+				mJumpPower -= 20;
 			}
 		}
 
@@ -144,9 +149,8 @@ void MoveComponent::Update(float deltaTime)
 		// pos += mOwner->GetForward() * mForwardSpeed * deltaTime;
 		pos += mForwardSpeed * deltaTime;
 		
-		if (pos.y < -224.0f) 
+		if (currentAction == Actor::ActionState::EStop || currentAction == Actor::ActionState::EWalk)
 		{ 
-			pos.y = -224.0f; 
 			mJumpPower = 0;
 			mIsJumping = false;
 			mCanJump = true;

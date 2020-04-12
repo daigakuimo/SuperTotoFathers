@@ -1,5 +1,4 @@
 #include "AnimSpriteComponent.h"
-#include "Actor.h"
 #include "Player.h"
 #include "Math.h"
 #include "Texture.h"
@@ -11,11 +10,11 @@ AnimSpriteComponent::AnimSpriteComponent(Actor* owner, int drawOrder)
 {
 }
 
-void AnimSpriteComponent::SetAnimRange(const std::string& action, int minRange, int maxRange, bool isRoop)
+void AnimSpriteComponent::SetAnimRange(Actor::ActionState state, int minRange, int maxRange, bool isRoop)
 {
 	AnimRange temp;
 
-	temp.actionName = action;
+	temp.state = state;
 	temp.minRange = minRange;
 	temp.maxRange = maxRange;
 	temp.isRoop = isRoop;
@@ -31,7 +30,7 @@ void AnimSpriteComponent::Update(float deltaTime)
 	{
 		if (mAnimTextures.size() > 0)
 		{
-			int currentAction = mOwner->GetCurrentAction();
+			Actor::ActionState currentAction = mOwner->GetActionState();
 
 			if (currentAction != -1)
 			{

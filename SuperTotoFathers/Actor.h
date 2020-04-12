@@ -12,6 +12,15 @@ public:
 		EDead
 	};
 
+	enum ActionState
+	{
+		EStop,
+		EWalk,
+		EJump,
+		EFall,
+		EDeath,
+	};
+
 	Actor(class Game* game);
 	virtual ~Actor();
 
@@ -49,6 +58,9 @@ public:
 	State GetState() const { return mState; }
 	void  SetState(State state) { mState = state; }
 
+	ActionState GetActionState() const { return mActionState; }
+	void SetActionState(ActionState state) { mActionState = state; }
+
 	class Game* GetGame() { return mGame; }
 
 	// Add/remove components
@@ -58,6 +70,9 @@ public:
 private:
 	// Actor's state
 	State mState;
+
+	// Actor's action state
+	ActionState mActionState;
 
 	// Transform
 	Matrix4 mWorldTransform;

@@ -11,15 +11,22 @@
 #include "Goomba.h"
 #include "TileMapComponent.h"
 #include "CameraActor.h"
+#include "PhysWorld.h"
+#include "BoxComponent.h"
 
-const int   thickness = 15;
-const float paddleH = 100.0f;
 
 Game::Game()
 	:mWindow(nullptr)
 	, mSpriteShader(nullptr)
+	, mPhysWorld(nullptr)
+	, mPlayer(nullptr)
+	, mGoomba(nullptr)
+	, mCameraActor(nullptr)
+	, mSpriteVerts(nullptr)
+	, mContext()
 	, mIsRunning(true)
 	, mUpdatingActors(false)
+	, mTicksCount(0)
 {
 
 }
@@ -58,6 +65,9 @@ bool Game::Initialize()
 
 	// Create an OpenGL context
 	mContext = SDL_GL_CreateContext(mWindow);
+
+	// Create the physics world
+	mPhysWorld = new PhysWorld(this);
 
 	// Initialize GLEW
 	glewExperimental = GL_TRUE;
@@ -233,19 +243,20 @@ void Game::CreateSpriteVerts()
 void Game::LoadData()
 {
 	mPlayer = new Player(this);
-	mPlayer->SetPosition(Vector2(0.0f, -223.0f));
+	mPlayer->SetPosition(Vector2(0.0f, -243.0f));
 	mPlayer->SetScale(1.0f);
 
 	mCameraActor = new CameraActor(this);
 	mCameraActor->SetActor(mPlayer);
 
 	mGoomba = new Goomba(this);
-	mGoomba->SetPosition(Vector2(400.0f, -224.0f));
+	mGoomba->SetPosition(Vector2(600.0f, -244.0f));
 	mGoomba->SetScale(1.0f);
 
+	SetEnemys(mGoomba);
 
 	Actor* temp = new Actor(this);
-	temp->SetPosition(Vector2(32.0f, 32.0f));
+	temp->SetPosition(Vector2(0.0f, 0.0f));
 	// Create the tile map
 	TileMapComponent* tm = new TileMapComponent(temp);
 	class Texture* tiletex = GetTexture("../Assets/TileMap1.png");

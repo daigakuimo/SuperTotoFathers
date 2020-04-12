@@ -20,6 +20,7 @@ public:
 	// Get tile set from csv file
 	bool GetMapLayer(const std::vector<std::string>& filenames, const char delimiter = ',');
 
+
 private:
 	struct tileMapVertex
 	{
@@ -29,6 +30,20 @@ private:
 		float verAfterY;
 	};
 
+	// タイルマップからBoxCompoentを作成する用
+	struct rectangle
+	{
+		int minX;
+		int maxX;
+		int minY;
+		int maxY;
+	};
+
+	bool mIsCreatingRect;
+
+	std::vector<std::vector<rectangle>> mTempRects;
+	std::vector<rectangle> mRects;
+	std::vector<class BoxComponent*> mBoxCompList;
 
 	class Texture* mTileTexture;
 	std::vector<std::vector<std::vector<int>>> mTileSets;
@@ -50,7 +65,10 @@ private:
 	const float MAP_HEIGHT = 12;
 	const float MAP_WIDTH = 16;
 
-
 	// 描画するタイルの一番左のX座標
 	int mScreenTileX;
+
+
+
+	int checkBox(const rectangle checkRect, int checkHeight);
 };

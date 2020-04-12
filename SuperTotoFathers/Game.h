@@ -24,6 +24,13 @@ public:
 	class Texture* GetTexture(const std::string& fileName);
 	class Shader* GetShader() { return mSpriteShader; }
 	class CameraActor* GetCameraActor() { return mCameraActor; }
+	class PhysWorld* GetPhysWorld() { return mPhysWorld; }
+
+	std::vector<class BoxComponent*> GetStageBoxes() { return mStageBoxes; }
+	void SetStageBoxes(class BoxComponent* box) { mStageBoxes.emplace_back(box); }
+
+	std::vector<class Actor*> GetEnemys() { return mEnemys; }
+	void SetEnemys(class Actor* enemy) { mEnemys.emplace_back(enemy); }
 
 
 private:
@@ -41,6 +48,10 @@ private:
 
 	std::vector<class SpriteComponent*> mSprites;
 
+	std::vector<class BoxComponent*> mStageBoxes;
+
+	std::vector<class Actor*> mEnemys;
+
 	std::unordered_map<std::string, class Texture*> mTextures;
 
 	class Shader* mSpriteShader;
@@ -56,6 +67,8 @@ private:
 	class Player* mPlayer;
 
 	class Goomba* mGoomba;
+
+	class PhysWorld* mPhysWorld;
 
 	// Game-specific code
 	class CameraActor* mCameraActor;

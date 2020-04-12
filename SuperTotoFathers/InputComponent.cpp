@@ -6,6 +6,7 @@ InputComponent::InputComponent(class Actor* owner)
 	, mForwardKey(0)
 	, mBackKey(0)
 	, mJumpKey(0)
+	, mDashKey(0)
 	, mIsPrevJumpKey(false)
 {
 
@@ -14,14 +15,20 @@ InputComponent::InputComponent(class Actor* owner)
 void InputComponent::ProcessInput(const uint8_t* keyState)
 {
 	// Calculate forward speed for MoveComponent
+	float moveForce = 80.0f;
+	if (keyState[mDashKey])
+	{
+		moveForce = 120.0f;
+	}
+
 	Vector2 force = Vector2::Zero;
 	if (keyState[mForwardKey])
 	{
-		force = Vector2(100.0f, 0.0f);
+		force = Vector2(moveForce, 0.0f);
 	}
 	if (keyState[mBackKey])
 	{
-		force = Vector2(-100.0f, 0.0f);
+		force = Vector2(-moveForce, 0.0f);
 	}
 	AddForce(force);
 	//SetForwardSpeed(force);
@@ -33,7 +40,7 @@ void InputComponent::ProcessInput(const uint8_t* keyState)
 		if (GetCanJump() && !mIsPrevJumpKey)
 		{
 			SetIsPushJumpKey(true);
-			SetJumpPower(250.0f);
+			SetJumpPower(200.0f);
 		}
 		SetPrevJumpKey(true);
 	}

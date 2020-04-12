@@ -4,11 +4,18 @@
 #include "Texture.h"
 #include "Shader.h"
 #include "VertexArray.h"
+#include "BoxComponent.h"
+#include "Game.h"
 
 TileMapComponent::TileMapComponent(class Actor* owner, int drawOrder)
-	:SpriteComponent(owner, drawOrder),
-	mTileTexture(nullptr),
-	mDrawOrder(drawOrder) {
+	:SpriteComponent(owner, drawOrder)
+	,mTileTexture(nullptr)
+	,mDrawOrder(drawOrder)
+	,mTexHeight(0)
+	,mTexWidth(0)
+	,mScreenTileX(0)
+	,mIsCreatingRect(false)	
+{
 
 }
 
@@ -26,9 +33,9 @@ void TileMapComponent::Draw(class Shader* shader, class VertexArray* vertex)
 
 
 	// タイルマップからマップを描画
-	for (size_t j = mMapDatas.size() - 1; j >= 0; j--)
+	for (int j = mMapDatas.size() - 1; j >= 0; j--)
 	{
-		for (int y = 0; y < MAP_HEIGHT; y++)
+		for (int y = 0; y < MAP_HEIGHT + 1; y++)
 		{
 			for (size_t x = 0; x < mMapDatas[j][y].size() + mScreenTileX; x++)
 			{
@@ -141,6 +148,7 @@ void TileMapComponent::SetTileMap(class Texture* tile_texture)
 	// CSVファイルの内容を取得する
 	status = GetMapLayer(filenames, ',');
 
+	rectangle rect;
 
 	tileMapVertex temp;
 
@@ -148,10 +156,14 @@ void TileMapComponent::SetTileMap(class Texture* tile_texture)
 	for (auto TileSet : mTileSets)
 	{
 		mMapDatas.emplace_back();
-		for (int i = 0; i < MAP_HEIGHT; i++)
+		for (int i = 0; i < MAP_HEIGHT + 1; i++)
 		{
 
 			mMapDatas.back().emplace_back();
+
+			mTempRects.emplace_back();
+
+			mIsCreatingRect = false;
 
 			for (int j = 0; j < TileSet[i].size(); j++)
 			{
@@ -161,6 +173,8 @@ void TileMapComponent::SetTileMap(class Texture* tile_texture)
 					temp.verAfterX = 0.0f;
 					temp.verBeforeY = 0.0f;
 					temp.verAfterY = 0.0f;
+
+					mIsCreatingRect = false;
 				}
 				else
 				{
@@ -168,10 +182,88 @@ void TileMapComponent::SetTileMap(class Texture* tile_texture)
 					temp.verAfterX = static_cast<float>(((((TileSet[i][j] - 1) % (int)(mTexWidth / TILE_WIDTH)) + 1) * TILE_WIDTH) / mTexWidth);
 					temp.verBeforeY = static_cast<float>(((int)((TileSet[i][j] - 1) / (mTexWidth / TILE_WIDTH)) * TILE_HEIGHT) / mTexHeight);
 					temp.verAfterY = static_cast<float>(((int)((TileSet[i][j] - 1) / (mTexWidth / TILE_WIDTH) + 1) * TILE_HEIGHT) / mTexHeight);
+
+					// BoxComponent作成のため、矩形を作成
+					if (!(TileSet[i][j] == 3 || TileSet[i][j] == 4 || TileSet[i][j] == 5 || TileSet[i][j] == 6))
+					{
+						if (mIsCreatingRect)
+						{
+							mTempRects.back().back().maxX = j;
+						}
+						else
+						{
+							mIsCreatingRect = true;
+							rect.minX = j;
+							rect.maxX = j;
+							rect.minY = i;
+							rect.maxY = i;
+							mTempRects.back().emplace_back(rect);
+						}
+					}
 				}
 
 				mMapDatas.back().back().emplace_back(temp);
 			}
 		}
 	}
+
+	// 一行ごとにできた矩形をくっつけてそれぞれ1つの矩形にする
+	for (size_t h = 0; h < mTempRects.size(); h++)
+	{
+		for (size_t w = 0; w < mTempRects[h].size(); w++)
+		{
+			mRects.emplace_back(mTempRects[h][w]);
+			checkBox(mTempRects[h][w], h + 1);
+		}
+	}
+
+	for (size_t i = 0; i < mRects.size(); i++)
+	{
+		class BoxComponent* boxComp = new BoxComponent(mOwner);
+		AABB tileBox(Vector3(mRects[i].minX * 64.0f - 512.0f - 32.0f , 384.0f - (mRects[i].maxY + 1) * 64.0f + 32.0f,0),
+			Vector3((mRects[i].maxX + 1) * 64.0f - 512.0f - 32.0f, 384.0f - (mRects[i].minY) * 64.0f + 32.0f,0));
+
+		boxComp->SetObjectBox(tileBox);
+		boxComp->SetShouldRotate(false);
+
+		mBoxCompList.emplace_back(boxComp);
+
+		mOwner->GetGame()->SetStageBoxes(boxComp);
+	}
 }
+
+int TileMapComponent::checkBox(const rectangle checkRect, int checkHeight)
+{
+	bool isMatch = false;
+	std::vector<int> deleteNumber;
+	for (size_t w = 0; w < mTempRects[checkHeight].size(); w++)
+	{
+		if (mTempRects[checkHeight][w].minX == checkRect.minX && mTempRects[checkHeight][w].maxX == checkRect.maxX)
+		{
+			mRects.back().maxY = mTempRects[checkHeight][w].maxY;
+			isMatch = true;
+
+			// 統合された矩形は消去
+			deleteNumber.emplace_back(w);
+			
+			break;
+		}
+	}
+
+
+	if (checkHeight + 1 < mTempRects.size())
+	{
+		if (isMatch)
+		{
+			checkBox(checkRect, checkHeight + 1);
+		}
+	}
+
+	for (auto iter = deleteNumber.begin(); iter != deleteNumber.end(); ++iter)
+	{
+		mTempRects[checkHeight].erase(mTempRects[checkHeight].begin() + *iter);
+	}
+
+	return 1;
+}
+

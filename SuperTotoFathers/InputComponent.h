@@ -18,6 +18,7 @@ public:
 	void SetForwardKey(int key) { mForwardKey = key; }
 	void SetBackKey(int key) { mBackKey = key; }
 	void SetJumpKey(int key) { mJumpKey = key; }
+	void SetDashKey(int key) { mDashKey = key; }
 	void SetPrevJumpKey(bool pushKey) { mIsPrevJumpKey = pushKey; }
 
 private:
@@ -27,6 +28,9 @@ private:
 
 	// keys for jump movement
 	int mJumpKey;
+
+	// keys for dash
+	int mDashKey;
 
 	// Previous push jump key
 	bool mIsPrevJumpKey;
