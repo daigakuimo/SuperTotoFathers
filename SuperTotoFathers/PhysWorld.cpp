@@ -7,7 +7,6 @@
 PhysWorld::PhysWorld(Game* game)
 	:mGame(game)
 {
-
 }
 
 bool PhysWorld::SegmentCast(const LineSegment& l, CollisionInfo& outColl)
@@ -47,8 +46,6 @@ bool PhysWorld::AvoidActorSegmentCast(const LineSegment& l, CollisionInfo& outCo
 	float closestT = Math::Infinity;
 	Vector3 norm;
 	// Test against all boxes
-	// SDL_Log("start");
-	//SDL_Log("line minX : %3.3f, maxX : %3.3f, minY :%3.3f, maxY : %3.3f", l.mStart.x, l.mEnd.x, l.mStart.y, l.mEnd.y);
 	for (auto box : mBoxes)
 	{
 		float t;
@@ -57,7 +54,6 @@ bool PhysWorld::AvoidActorSegmentCast(const LineSegment& l, CollisionInfo& outCo
 			continue;
 		}
 
-		//SDL_Log("box minX : %3.3f, maxX : %3.3f, minY :%3.3f, maxY : %3.3f", box->GetWorldBox().mMin.x, box->GetWorldBox().mMax.x, box->GetWorldBox().mMin.y, box->GetWorldBox().mMax.y);
 		// Does the segment intersect with the box?
 		if (Intersect(l, box->GetWorldBox(), t, norm))
 		{

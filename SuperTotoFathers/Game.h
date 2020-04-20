@@ -6,6 +6,14 @@
 #include "Math.h"
 #include <glew.h>
 
+
+struct enemyCollision
+{
+	enemyCollision();
+	class CircleComponent* mCircle;
+	class Actor* mOwner;
+};
+
 class Game
 {
 public:
@@ -29,8 +37,12 @@ public:
 	std::vector<class BoxComponent*> GetStageBoxes() { return mStageBoxes; }
 	void SetStageBoxes(class BoxComponent* box) { mStageBoxes.emplace_back(box); }
 
-	std::vector<class Actor*> GetEnemys() { return mEnemys; }
-	void SetEnemys(class Actor* enemy) { mEnemys.emplace_back(enemy); }
+	std::vector<enemyCollision> GetEnemys() { return mEnemys; }
+	void SetEnemys(enemyCollision info) { mEnemys.emplace_back(info); }
+
+	std::vector<class Brock*> GetBrocks() { return mBrocks; }
+	void SetBrock(class Brock* brock) { mBrocks.emplace_back(brock); }
+	void RemoveBrock(class Brock* brock);
 
 
 private:
@@ -50,7 +62,9 @@ private:
 
 	std::vector<class BoxComponent*> mStageBoxes;
 
-	std::vector<class Actor*> mEnemys;
+	std::vector<class Brock*> mBrocks;
+
+	std::vector<enemyCollision> mEnemys;
 
 	std::unordered_map<std::string, class Texture*> mTextures;
 
@@ -70,6 +84,10 @@ private:
 
 	class PhysWorld* mPhysWorld;
 
+	class StageManager* mStage;
+
 	// Game-specific code
 	class CameraActor* mCameraActor;
 };
+
+

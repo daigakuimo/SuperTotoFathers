@@ -15,10 +15,10 @@ public:
 	enum ActionState
 	{
 		EStop,
+		EDeath,
 		EWalk,
 		EJump,
 		EFall,
-		EDeath,
 	};
 
 	Actor(class Game* game);
@@ -86,5 +86,9 @@ private:
 
 	std::vector<class Component*> mComponents;
 	class Game* mGame;
+
+	// 当たり判定のコンポーネントを入れる
+	std::vector<class BoxComponent*> mBoxCompList;
+	std::vector<class CircleComponent*> mCircleCompList;
 
 };

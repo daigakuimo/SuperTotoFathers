@@ -4,6 +4,7 @@
 #include "AnimSpriteComponent.h"
 #include "MoveComponent.h"
 #include "BoxComponent.h"
+#include "CircleComponent.h"
 #include "PhysWorld.h"
 
 
@@ -20,10 +21,10 @@ Goomba::Goomba(Game* game)
 
 	asc->SetAnimTextures(anims);
 	asc->SetAnimRange(ActionState::EStop, 0, 0, true);
+	asc->SetAnimRange(ActionState::EDeath, 2, 2, true);
 	asc->SetAnimRange(ActionState::EWalk, 0, 1, true);
 	asc->SetAnimRange(ActionState::EJump, 0, 0, true);
 	asc->SetAnimRange(ActionState::EFall, 0, 0, true);
-	asc->SetAnimRange(ActionState::EDeath,2, 2, true);
 	asc->SetAnimFPS(5.0f);
 
 	SetActionState(ActionState::EWalk);
@@ -40,29 +41,49 @@ Goomba::Goomba(Game* game)
 	mBoxComp->SetObjectBox(myBox);
 	mBoxComp->SetShouldRotate(false);
 
+	Sphere myCircle(Vector3(GetPosition().x, GetPosition().y, 0.0f), 32.0f);
+	mCircleComp = new CircleComponent(this);
+	mCircleComp->SetObjectCircle(myCircle);
+
+	enemyCollision temp;
+	temp.mCircle = mCircleComp;
+	temp.mOwner = this;
+
+	game->SetEnemys(temp);
 }
 
 void Goomba::UpdateActor(float deltaTime)
 {
 	mBoxComp->OnUpdateWorldTransform();
 	// ’n–Ê‚É‚¢‚é‚©‚Ç‚¤‚©”»’è
-	Vector3 start = Vector3(GetPosition().x, GetPosition().y, 0);
-	Vector3 dir = Vector3(0, -1, 0);
-	Vector3 end = start + dir * mDOWN_SEGMENT_LENGTH;
-	LineSegment downLs(start, end);
-
-	PhysWorld* phys = GetGame()->GetPhysWorld();
-	PhysWorld::CollisionInfo info;
-	if (phys->AvoidActorSegmentCast(downLs, info, this))
+	if (GetActionState() != ActionState::EDeath)
 	{
-		SetActionState(ActionState::EWalk);
-		mc->AddForce(moveSpeed);
+		Vector3 start = Vector3(GetPosition().x, GetPosition().y, 0);
+		Vector3 dir = Vector3(0, -1, 0);
+		Vector3 end = start + dir * mDOWN_SEGMENT_LENGTH;
+		LineSegment downLs(start, end);
+
+		PhysWorld* phys = GetGame()->GetPhysWorld();
+		PhysWorld::CollisionInfo info;
+		if (phys->AvoidActorSegmentCast(downLs, info, this))
+		{
+			SetActionState(ActionState::EWalk);
+			mc->AddForce(moveSpeed);
+		}
+		else
+		{
+			SetActionState(ActionState::EJump);
+		}
 	}
 	else
 	{
-		SetActionState(ActionState::EJump);
-	}
+		deathCount++;
 
+		if (deathCount >= 50)
+		{
+			SetState(State::EDead);
+		}
+	}
 
 	std::vector<class BoxComponent*> boxList = GetGame()->GetStageBoxes();
 

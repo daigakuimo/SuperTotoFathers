@@ -17,6 +17,10 @@ public:
 	// Create tile map from tile set
 	void SetTileMap(class Texture* tile_texture);
 
+	void SetChasePlayer(class Actor* player) { mChasePlayer = player; }
+
+	class Actor* GetChasePlayer() { return mChasePlayer; }
+
 	// Get tile set from csv file
 	bool GetMapLayer(const std::vector<std::string>& filenames, const char delimiter = ',');
 
@@ -65,10 +69,11 @@ private:
 	const float MAP_HEIGHT = 12;
 	const float MAP_WIDTH = 16;
 
-	// 描画するタイルの一番左のX座標
-	int mScreenTileX;
+	// １フレーム前の描画するタイルの一番左のX座標
+	int mBeforeTileX;
 
-
+	class Actor* mChasePlayer;
 
 	int checkBox(const rectangle checkRect, int checkHeight);
+
 };

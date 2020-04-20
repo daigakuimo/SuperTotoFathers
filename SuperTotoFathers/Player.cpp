@@ -5,17 +5,16 @@
 #include "AnimSpriteComponent.h"
 #include "CameraActor.h"
 #include "BoxComponent.h"
+#include "CircleComponent.h"
 #include "PhysWorld.h"
+#include "Brock.h"
 
 int c = 0;
 
 Player::Player(Game* game)
 	:Actor(game)
 {
-	// Create a sprite component
-	//SpriteComponent* sc = new SpriteComponent(this, 150);
-	//sc->SetTexture(game->GetTexture("../Assets/TOTO1-1.png"));
-
+	
 	// Create an animation sprite compoent
 	AnimSpriteComponent* asc = new AnimSpriteComponent(this);
 	std::vector<class Texture*> anims = {
@@ -26,6 +25,7 @@ Player::Player(Game* game)
 
 	asc->SetAnimTextures(anims);
 	asc->SetAnimRange(ActionState::EStop, 0, 0, true);
+	asc->SetAnimRange(ActionState::EDeath, 0, 0, true);
 	asc->SetAnimRange(ActionState::EWalk, 1, 2, true);
 	asc->SetAnimRange(ActionState::EJump, 1, 2, true);
 	asc->SetAnimRange(ActionState::EFall, 0, 0, true);
@@ -77,9 +77,8 @@ void Player::UpdateActor(float deltaTime)
 		SetActionState(ActionState::EJump);
 	}
 
-
+	// ステージ(壊れないオブジェクト)との当たり判定s
 	std::vector<class BoxComponent*> boxList = GetGame()->GetStageBoxes();
-	
 	for (auto box : boxList)
 	{
 		// 当たり判定
@@ -90,87 +89,53 @@ void Player::UpdateActor(float deltaTime)
 
 		if (Intersect(playerBox, stageBox))
 		{
-			// どこに衝突したか判定
-			Vector3 lineStart = Vector3(mPrevPos.x, mPrevPos.y, 0);
-			Vector3 lineEnd   = Vector3(GetPosition().x, GetPosition().y, 0);
-			LineSegment line(start, end);
+			// 全ての差を計算する
+			float dx1 = stageBox.mMin.x - playerBox.mMax.x;
+			float dx2 = stageBox.mMax.x - playerBox.mMin.x;
+			float dy1 = stageBox.mMin.y - playerBox.mMax.y;
+			float dy2 = stageBox.mMax.y - playerBox.mMin.y;
 
-			float t;
+			// 絶対値の小さい方をセットする
+			float dx = (Math::Abs(dx1) < Math::Abs(dx2)) ? dx1 : dx2;
+			float dy = (Math::Abs(dy1) < Math::Abs(dy2)) ? dy1 : dy2;
 
-			Vector3 norm;
-
-			float dx = 0.0f;
-			float dy = 0.0f;
-
-			if (Intersect(line, stageBox, t, norm))
+			// x/yのうち一番小さい軸で位置を調整
+			if (Math::Abs(dx) < Math::Abs(dy))
 			{
-
-				if (norm ==  Vector3::NegUnitX)
-				{
-					// オブジェクトの左側に当たった
-					float dy1 = stageBox.mMin.y - playerBox.mMax.y;
-					float dy2 = stageBox.mMax.y - playerBox.mMin.y;
-
-					dx = stageBox.mMin.x - playerBox.mMax.x;
-					dy = (Math::Abs(dy1) < Math::Abs(dy2)) ? dy1 : dy2;
-				}
-				else if (norm == Vector3::UnitX)
-				{
-					// オブジェクトの右側に当たった
-					float dy1 = stageBox.mMin.y - playerBox.mMax.y;
-					float dy2 = stageBox.mMax.y - playerBox.mMin.y;
-
-					dx = stageBox.mMax.x - playerBox.mMin.x;
-					dy = (Math::Abs(dy1) < Math::Abs(dy2)) ? dy1 : dy2;
-				}
-				else if (norm == Vector3::NegUnitY)
-				{
-					// オブジェクトの下側に当たった
-					float dx1 = stageBox.mMin.x - playerBox.mMax.x;
-					float dx2 = stageBox.mMax.x - playerBox.mMin.x;
-
-					// 絶対値の小さい方をセットする
-					dx = (Math::Abs(dx1) < Math::Abs(dx2)) ? dx1 : dx2;
-					dy = stageBox.mMin.y - playerBox.mMax.y;
-				}
-				else if (norm == Vector3::UnitY)
-				{
-					// オブジェクトの上側に当たった
-					float dx1 = stageBox.mMin.x - playerBox.mMax.x;
-					float dx2 = stageBox.mMax.x - playerBox.mMin.x;
-					
-					// 絶対値の小さい方をセットする
-					dx = (Math::Abs(dx1) < Math::Abs(dx2)) ? dx1 : dx2;
-					dy = stageBox.mMax.y - playerBox.mMin.y;
-				}
-				else
-				{
-					// 全ての差を計算する
-					float dx1 = stageBox.mMin.x - playerBox.mMax.x;
-					float dx2 = stageBox.mMax.x - playerBox.mMin.x;
-					float dy1 = stageBox.mMin.y - playerBox.mMax.y;
-					float dy2 = stageBox.mMax.y - playerBox.mMin.y;
-
-
-					// 絶対値の小さい方をセットする
-					dx = (Math::Abs(dx1) < Math::Abs(dx2)) ? dx1 : dx2;
-					dy = (Math::Abs(dy1) < Math::Abs(dy2)) ? dy1 : dy2;
-				}
-
+				pos.x += dx;
 			}
 			else
 			{
-				// 全ての差を計算する
-				float dx1 = stageBox.mMin.x - playerBox.mMax.x;
-				float dx2 = stageBox.mMax.x - playerBox.mMin.x;
-				float dy1 = stageBox.mMin.y - playerBox.mMax.y;
-				float dy2 = stageBox.mMax.y - playerBox.mMin.y;
-
-
-				// 絶対値の小さい方をセットする
-				dx = (Math::Abs(dx1) < Math::Abs(dx2)) ? dx1 : dx2;
-				dy = (Math::Abs(dy1) < Math::Abs(dy2)) ? dy1 : dy2;
+				pos.y += dy;
 			}
+
+			// 位置を調整
+			SetPosition(pos);
+			mBoxComp->OnUpdateWorldTransform();
+		}
+	}
+
+	// ブロックとの当たり判定
+	std::vector<class Brock*> brockList = GetGame()->GetBrocks();
+	for (auto brock : brockList)
+	{
+		// 当たり判定
+		Vector2 pos = GetPosition();
+
+		const AABB& brockBox = brock->GetBoxComp()->GetWorldBox();
+		const AABB& playerBox = mBoxComp->GetWorldBox();
+
+		if (Intersect(playerBox, brockBox))
+		{
+			// 全ての差を計算する
+			float dx1 = brockBox.mMin.x - playerBox.mMax.x;
+			float dx2 = brockBox.mMax.x - playerBox.mMin.x;
+			float dy1 = brockBox.mMin.y - playerBox.mMax.y;
+			float dy2 = brockBox.mMax.y - playerBox.mMin.y;
+
+			// 絶対値の小さい方をセットする
+			float dx = (Math::Abs(dx1) < Math::Abs(dx2)) ? dx1 : dx2;
+			float dy = (Math::Abs(dy1) < Math::Abs(dy2)) ? dy1 : dy2;
 
 			// x/yのうち一番小さい軸で位置を調整
 			if (Math::Abs(dx) < Math::Abs(dy))
@@ -186,14 +151,49 @@ void Player::UpdateActor(float deltaTime)
 			SetPosition(pos);
 			mBoxComp->OnUpdateWorldTransform();
 
+			if (brockBox.mMin.y >= playerBox.mMax.y)
+			{
+				ic->SetForwardSpeed(Vector2(ic->GetForwardSpeed().x, 0.f));
+				ic->SetJumpPower(-30.0f);
+				brock->SetActionState(ActionState::EDeath);
+			}
 		}
 	}
+
+
+	// 敵との当たり判定
+	std::vector<enemyCollision> enemyList = GetGame()->GetEnemys();
+	for (auto enemy : enemyList)
+	{
+		const AABB& playerBox = mBoxComp->GetWorldBox();
+		const Sphere& enemyCircle = enemy.mCircle->GetWorldCircle();
+		if (enemy.mOwner->GetActionState() == ActionState::EDeath)
+		{
+			continue;
+		}
+		if (Intersect(enemyCircle, playerBox))
+		{
+			float hitPos = Math::Max(playerBox.mMin.y - enemyCircle.mCenter.y, 0.0f);
+			hitPos = Math::Max(hitPos, enemyCircle.mCenter.y - playerBox.mMax.y);
+			if (hitPos == playerBox.mMin.y - enemyCircle.mCenter.y)
+			{
+				ic->SetForwardSpeed(Vector2(ic->GetForwardSpeed().x, 0.f));
+				ic->SetJumpPower(60.0f);
+				enemy.mOwner->SetActionState(ActionState::EDeath);
+			}
+			else
+			{
+				SetState(State::EDead);
+			}
+		}
+	}
+
 
 	// 画面の左端では止まる
 	float cameraPos = GetGame()->GetCameraActor()->GetBeforeX();
 	Vector2 currentPos = GetPosition();
-	if (currentPos.x < -cameraPos - 445.0f) 
-	{ 
+	if (currentPos.x < -cameraPos - 445.0f)
+	{
 		SetPosition(Vector2(-cameraPos - 445.0f, currentPos.y));
 	}
 

@@ -53,13 +53,11 @@ void MoveComponent::Update(float deltaTime)
 		mForwardSpeed += mForwardAcceleration * sin(Math::Pi * 1/60 * timeCount) * deltaTime;
 
 		// jump action
-		if (mIsPushJumpKey || mIsJumping)
+		if (mIsPushJumpKey || mIsJumping || mJumpPower != 0)
 		{
 			if (mIsPushJumpKey)
 			{
 				mPrevPosition = pos;
-				mIsJumping = true;
-				mCanJump = false;
 			}
 
 			float tempPosY = (pos.y + 384.0f) - (mPrevPosition.y + 384.0f);
@@ -154,9 +152,12 @@ void MoveComponent::Update(float deltaTime)
 			mJumpPower = 0;
 			mIsJumping = false;
 			mCanJump = true;
+			//SDL_Log("ddddd");
 		}
 
 		mOwner->SetPosition(pos);
+
+		// SDL_Log("mCanJump : %d", mCanJump);
 	}
 }
 

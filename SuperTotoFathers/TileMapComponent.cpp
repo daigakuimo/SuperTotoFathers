@@ -13,7 +13,7 @@ TileMapComponent::TileMapComponent(class Actor* owner, int drawOrder)
 	,mDrawOrder(drawOrder)
 	,mTexHeight(0)
 	,mTexWidth(0)
-	,mScreenTileX(0)
+	,mBeforeTileX(0)
 	,mIsCreatingRect(false)	
 {
 
@@ -22,11 +22,14 @@ TileMapComponent::TileMapComponent(class Actor* owner, int drawOrder)
 void TileMapComponent::Draw(class Shader* shader, class VertexArray* vertex)
 {
 	// プレイヤ―の位置から表示する座標を求める
-	int tempTileX = (int)(mOwner->GetPosition().x) / (int)TILE_WIDTH;
-	if (mScreenTileX < tempTileX)
+	int tileX = ((int)(GetChasePlayer()->GetPosition().x) / (int)TILE_WIDTH) + 1;
+
+	if (mBeforeTileX > tileX)
 	{
-		mScreenTileX = tempTileX;
+		tileX = mBeforeTileX;
 	}
+
+	mBeforeTileX = tileX;
 
 	float verX = static_cast<float>(TILE_WIDTH / mTexWidth) / 2;
 	float verY = static_cast<float>((float)TILE_HEIGHT / (float)mTexHeight) / 2.0f;
@@ -37,7 +40,7 @@ void TileMapComponent::Draw(class Shader* shader, class VertexArray* vertex)
 	{
 		for (int y = 0; y < MAP_HEIGHT + 1; y++)
 		{
-			for (size_t x = 0; x < mMapDatas[j][y].size() + mScreenTileX; x++)
+			for (size_t x = tileX; x < tileX + MAP_WIDTH + 4; x++)
 			{
 				if (mMapDatas[j][y][x].verBeforeX == 0 && mMapDatas[j][y][x].verAfterX == 0)
 				{
@@ -67,7 +70,7 @@ void TileMapComponent::Draw(class Shader* shader, class VertexArray* vertex)
 					static_cast<float>(mTexHeight),
 					1.0f);
 
-				Matrix4 tileTranslation = Matrix4::CreateTranslation(Vector3(mOwner->GetPosition().x + tilePositionX - 512.0f, 384.0f - (mOwner->GetPosition().y + tilePositionY), 0.0f));
+				Matrix4 tileTranslation = Matrix4::CreateTranslation(Vector3(tilePositionX - 512.0f, 384.0f - tilePositionY, 0.0f));
 
 				Matrix4 world = scaleMat * tileTranslation;
 
@@ -129,6 +132,7 @@ bool TileMapComponent::GetMapLayer(const std::vector<std::string> & filenames, c
 
 	return true;
 }
+
 
 void TileMapComponent::SetTileMap(class Texture* tile_texture)
 {

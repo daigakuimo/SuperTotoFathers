@@ -10,7 +10,7 @@ public:
 	void ActorInput(const uint8_t* keyState) override;
 
 private:
-	const float mDOWN_SEGMENT_LENGTH = 33.0f;
+	const float mDOWN_SEGMENT_LENGTH = 32.0f;
 
 	class InputComponent* ic;
 	class BoxComponent* mBoxComp;

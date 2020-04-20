@@ -24,6 +24,7 @@ public:
 	void SetIsPushJumpKey(bool pushKey) { mIsPushJumpKey = pushKey; }
 	void SetJumpPower(float jumpPower) { mJumpPower = jumpPower; }
 	bool GetCanJump() const { return mCanJump; }
+	void SetCanJump(bool b) { mCanJump = b; }
 	void SetMaxJumpHeight(float height) { mMaxJumpHeight = height; }
 	float GetMaxJump() const { return mMaxJumpHeight; }
 

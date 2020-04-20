@@ -159,7 +159,9 @@
     <ClCompile Include="AnimSpriteComponent.cpp" />
     <ClCompile Include="BGSpriteComponent.cpp" />
     <ClCompile Include="BoxComponent.cpp" />
+    <ClCompile Include="Brock.cpp" />
     <ClCompile Include="CameraActor.cpp" />
+    <ClCompile Include="CircleComponent.cpp" />
     <ClCompile Include="Collision.cpp" />
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="Game.cpp" />
@@ -174,6 +176,7 @@
     <ClCompile Include="Random.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="SpriteComponent.cpp" />
+    <ClCompile Include="StageManager.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="TileMapComponent.cpp" />
@@ -184,7 +187,9 @@
     <ClInclude Include="AnimSpriteComponent.h" />
     <ClInclude Include="BGSpriteComponent.h" />
     <ClInclude Include="BoxComponent.h" />
+    <ClInclude Include="Brock.h" />
     <ClInclude Include="CameraActor.h" />
+    <ClInclude Include="CircleComponent.h" />
     <ClInclude Include="Collision.h" />
     <ClInclude Include="Component.h" />
     <ClInclude Include="Game.h" />
@@ -198,6 +203,7 @@
     <ClInclude Include="Random.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="SpriteComponent.h" />
+    <ClInclude Include="StageManager.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="TileMapComponent.h" />

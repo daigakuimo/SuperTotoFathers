@@ -13,6 +13,8 @@
 #include "CameraActor.h"
 #include "PhysWorld.h"
 #include "BoxComponent.h"
+#include "CircleComponent.h"
+#include "StageManager.h"
 
 
 Game::Game()
@@ -22,6 +24,7 @@ Game::Game()
 	, mPlayer(nullptr)
 	, mGoomba(nullptr)
 	, mCameraActor(nullptr)
+	, mStage(nullptr)
 	, mSpriteVerts(nullptr)
 	, mContext()
 	, mIsRunning(true)
@@ -253,14 +256,14 @@ void Game::LoadData()
 	mGoomba->SetPosition(Vector2(600.0f, -244.0f));
 	mGoomba->SetScale(1.0f);
 
-	SetEnemys(mGoomba);
-
-	Actor* temp = new Actor(this);
-	temp->SetPosition(Vector2(0.0f, 0.0f));
+	mStage = new StageManager(this);
+	mStage->SetPosition(Vector2(0.0f, 0.0f));
+	mStage->SetPlayer(mPlayer);
 	// Create the tile map
-	TileMapComponent* tm = new TileMapComponent(temp);
+	TileMapComponent* tm = new TileMapComponent(mStage);
 	class Texture* tiletex = GetTexture("../Assets/TileMap1.png");
 	tm->SetTileMap(tiletex);
+	tm->SetChasePlayer(mPlayer);
 	
 }
 
@@ -305,6 +308,7 @@ Texture* Game::GetTexture(const std::string& fileName)
 	}
 	return tex;
 }
+
 void Game::Shutdown()
 {
 	UnloadData();
@@ -374,4 +378,20 @@ void Game::RemoveSprite(SpriteComponent * sprite)
 {
 	auto iter = std::find(mSprites.begin(), mSprites.end(), sprite);
 	mSprites.erase(iter);
+}
+
+void Game::RemoveBrock(class Brock* brock)
+{
+	auto iter = std::find(mBrocks.begin(), mBrocks.end(), brock);
+	if (iter != mBrocks.end())
+	{
+		mBrocks.erase(iter);
+	}
+}
+
+enemyCollision::enemyCollision()
+	:mCircle(nullptr)
+	, mOwner(nullptr)
+{
+
 }

@@ -1,5 +1,6 @@
 #include "InputComponent.h"
 #include "Actor.h"
+#include <SDL_Log.h>
 
 InputComponent::InputComponent(class Actor* owner)
 	:MoveComponent(owner)
@@ -9,7 +10,6 @@ InputComponent::InputComponent(class Actor* owner)
 	, mDashKey(0)
 	, mIsPrevJumpKey(false)
 {
-
 }
 
 void InputComponent::ProcessInput(const uint8_t* keyState)
@@ -40,7 +40,10 @@ void InputComponent::ProcessInput(const uint8_t* keyState)
 		if (GetCanJump() && !mIsPrevJumpKey)
 		{
 			SetIsPushJumpKey(true);
-			SetJumpPower(200.0f);
+			SetCanJump(false);
+			SetJumpPower(250.0f);
+			/*SDL_Log("ccc");
+			SDL_Log("");*/
 		}
 		SetPrevJumpKey(true);
 	}
