@@ -9,12 +9,12 @@ int count = 0;
 
 MoveComponent::MoveComponent(class Actor* owner,int updateOrder)
 	:Component(owner, updateOrder)
-	,mAngularSpeed(0.0f)
+	,mAngularSpeed(0.f)
 	,mForwardSpeed(Vector2::Zero)
 	,mMass(0.f)
 	,mVelocityLimit(0.f,0.f)
 	,timeCount(0)
-	, mIsGravity(false)
+	,mIsGravity(false)
 {
 }
 

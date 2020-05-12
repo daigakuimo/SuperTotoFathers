@@ -165,11 +165,14 @@
     <ClCompile Include="Collision.cpp" />
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="Goal.cpp" />
     <ClCompile Include="Goomba.cpp" />
     <ClCompile Include="InputComponent.cpp" />
+    <ClCompile Include="Item.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Math.cpp" />
     <ClCompile Include="MoveComponent.cpp" />
+    <ClCompile Include="Mushroom.cpp" />
     <ClCompile Include="PhysWorld.cpp" />
     <ClCompile Include="PlayerState.cpp" />
     <ClCompile Include="PlayerStateComponent.cpp" />
@@ -181,6 +184,7 @@
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="TileMapComponent.cpp" />
     <ClCompile Include="VertexArray.cpp" />
+    <ClCompile Include="GoalFlag.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Actor.h" />
@@ -193,10 +197,14 @@
     <ClInclude Include="Collision.h" />
     <ClInclude Include="Component.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="Goal.h" />
+    <ClInclude Include="GoalFlag.h" />
     <ClInclude Include="Goomba.h" />
     <ClInclude Include="InputComponent.h" />
+    <ClInclude Include="Item.h" />
     <ClInclude Include="Math.h" />
     <ClInclude Include="MoveComponent.h" />
+    <ClInclude Include="Mushroom.h" />
     <ClInclude Include="PhysWorld.h" />
     <ClInclude Include="PlayerState.h" />
     <ClInclude Include="PlayerStateComponent.h" />

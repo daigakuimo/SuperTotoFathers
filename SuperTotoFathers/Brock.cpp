@@ -4,9 +4,12 @@
 #include "Game.h"
 #include "Texture.h"
 #include "BoxComponent.h"
+#include "CameraActor.h"
+#include "Mushroom.h"
 
 Brock::Brock(class Game* game, int item)
-	:Actor(game)
+	: Actor(game)
+	, mIsPutOutItem(false)
 {
 	mContainItem = static_cast<ContainItem>(item);
 
@@ -43,6 +46,7 @@ Brock::Brock(class Game* game, int item)
 	mBoxComp->SetShouldRotate(false);
 
 	GetGame()->SetBrock(this);
+	SDL_Log("set");
 }
 
 Brock::~Brock()
@@ -54,17 +58,32 @@ void Brock::UpdateActor(float deltaTime)
 {
 	mBoxComp->OnUpdateWorldTransform();
 
-	if(mContainItem == ContainItem::EHatenaMushroom || mContainItem == ContainItem::EHatenaCoin)
+	if (GetActionState() == ActionState::EDeath && !mIsPutOutItem)
 	{
-	
-
-	}
-	else
-	{
-		if (GetActionState() == ActionState::EDeath)
+		if (mContainItem == ContainItem::EHatenaMushroom)
+		{
+			mIsPutOutItem = true;
+			class Mushroom* mushroom = new Mushroom(GetGame());
+			mushroom->SetPosition(Vector2(GetPosition().x, GetPosition().y + 64.0f));
+			mushroom->SetScale(1.0f);
+		}
+		else if (mContainItem == ContainItem::EHatenaCoin)
+		{
+			mIsPutOutItem = true;
+		}
+		else
 		{
 			SetState(State::EDead);
+			mIsPutOutItem = true;
 		}
+	}
+
+	// 画面の画面外に出たらインスタンスを削除
+	float cameraPos = GetGame()->GetCameraActor()->GetBeforeX();
+	Vector2 currentPos = GetPosition();
+	if (currentPos.x < -cameraPos - 573.0f)
+	{
+		SetState(State::EDead);
 	}
 	
 }

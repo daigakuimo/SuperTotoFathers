@@ -8,8 +8,8 @@
 #include "CircleComponent.h"
 #include "PhysWorld.h"
 #include "Brock.h"
-
-int c = 0;
+#include "Item.h"
+#include "Goal.h"
 
 Player::Player(Game* game)
 	:Actor(game)
@@ -56,7 +56,7 @@ void Player::UpdateActor(float deltaTime)
 	// 地面にいるかどうか判定
 	Vector3 start = Vector3(GetPosition().x, GetPosition().y, 0);
 	Vector3 dir = Vector3(0, -1, 0);
-	Vector3 end = start + dir * mDOWN_SEGMENT_LENGTH;
+	Vector3 end = start + dir * mDOWN_SEGMENT_LENGTH * GetScale();
 	LineSegment downLs(start, end);
 
 	PhysWorld* phys = GetGame()->GetPhysWorld();
@@ -77,7 +77,26 @@ void Player::UpdateActor(float deltaTime)
 		SetActionState(ActionState::EJump);
 	}
 
-	// ステージ(壊れないオブジェクト)との当たり判定s
+	// アイテムとの当たり判定
+	std::vector<class Item*> itemList = GetGame()->GetItems();
+	for (auto item : itemList)
+	{
+		// 当たり判定
+		Vector2 pos = GetPosition();
+
+		const AABB& itemBox = item->GetBoxComp()->GetWorldBox();
+		const AABB& playerBox = mBoxComp->GetWorldBox();
+
+		if (Intersect(playerBox, itemBox))
+		{
+			item->CollisionPlayer(this);
+
+			// 位置を調整
+			mBoxComp->OnUpdateWorldTransform();
+		}
+	}
+
+	// ステージ(壊れないオブジェクト)との当たり判定
 	std::vector<class BoxComponent*> boxList = GetGame()->GetStageBoxes();
 	for (auto box : boxList)
 	{
@@ -115,6 +134,7 @@ void Player::UpdateActor(float deltaTime)
 		}
 	}
 
+
 	// ブロックとの当たり判定
 	std::vector<class Brock*> brockList = GetGame()->GetBrocks();
 	for (auto brock : brockList)
@@ -151,7 +171,8 @@ void Player::UpdateActor(float deltaTime)
 			SetPosition(pos);
 			mBoxComp->OnUpdateWorldTransform();
 
-			if (brockBox.mMin.y >= playerBox.mMax.y)
+			// ジャンプ中に下からブロックに当たったら、ブロックを潰す
+			if ((brockBox.mMin.y >= playerBox.mMax.y) && (ic->GetForwardSpeed().y > 0))
 			{
 				ic->SetForwardSpeed(Vector2(ic->GetForwardSpeed().x, 0.f));
 				ic->SetJumpPower(-30.0f);
@@ -162,12 +183,12 @@ void Player::UpdateActor(float deltaTime)
 
 
 	// 敵との当たり判定
-	std::vector<enemyCollision> enemyList = GetGame()->GetEnemys();
+	std::vector<class CircleComponent*> enemyList = GetGame()->GetEnemys();
 	for (auto enemy : enemyList)
 	{
 		const AABB& playerBox = mBoxComp->GetWorldBox();
-		const Sphere& enemyCircle = enemy.mCircle->GetWorldCircle();
-		if (enemy.mOwner->GetActionState() == ActionState::EDeath)
+		const Sphere& enemyCircle = enemy->GetWorldCircle();
+		if (enemy->GetOwner()->GetActionState() == ActionState::EDeath)
 		{
 			continue;
 		}
@@ -179,7 +200,7 @@ void Player::UpdateActor(float deltaTime)
 			{
 				ic->SetForwardSpeed(Vector2(ic->GetForwardSpeed().x, 0.f));
 				ic->SetJumpPower(60.0f);
-				enemy.mOwner->SetActionState(ActionState::EDeath);
+				enemy->GetOwner()->SetActionState(ActionState::EDeath);
 			}
 			else
 			{
@@ -187,6 +208,43 @@ void Player::UpdateActor(float deltaTime)
 			}
 		}
 	}
+
+	// ゴールとの当たり判定
+	class Goal* goal = GetGame()->GetGoal();
+	const AABB& playerBox = mBoxComp->GetWorldBox();
+	const AABB& goalBox   = goal->GetBoxComp()->GetWorldBox();
+	if (Intersect(goalBox, playerBox))
+	{
+		// 当たり判定
+		Vector2 pos = GetPosition();
+
+		// 全ての差を計算する
+		float dx1 = goalBox.mMin.x - playerBox.mMax.x;
+		float dx2 = goalBox.mMax.x - playerBox.mMin.x;
+		float dy1 = goalBox.mMin.y - playerBox.mMax.y;
+		float dy2 = goalBox.mMax.y - playerBox.mMin.y;
+
+		// 絶対値の小さい方をセットする
+		float dx = (Math::Abs(dx1) < Math::Abs(dx2)) ? dx1 : dx2;
+		float dy = (Math::Abs(dy1) < Math::Abs(dy2)) ? dy1 : dy2;
+
+		// x/yのうち一番小さい軸で位置を調整
+		if (Math::Abs(dx) < Math::Abs(dy))
+		{
+			pos.x += dx;
+		}
+		else
+		{
+			pos.y += dy;
+		}
+
+		// 位置を調整
+		SetPosition(pos);
+		mBoxComp->OnUpdateWorldTransform();
+
+		goal->SetActionState(ActionState::EWalk);
+	}
+
 
 
 	// 画面の左端では止まる

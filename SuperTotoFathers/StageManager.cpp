@@ -1,6 +1,8 @@
 #include "StageManager.h"
 #include "Brock.h"
 #include "SDL_log.h"
+#include "Goomba.h"
+#include "Goal.h"
 
 StageManager::StageManager(class Game* game)
 	:Actor(game)
@@ -9,9 +11,8 @@ StageManager::StageManager(class Game* game)
 {
 	std::vector<std::string> filenames = {
 		"../Assets/BrockLayer.csv",
+		"../Assets/EnemysLayer.csv"
 	};
-
-	// "../Assets/EnemysLayer.csv"
 
 	GetStageLayer(filenames);
 
@@ -67,6 +68,9 @@ void StageManager::UpdateActor(float deltaTime)
 				if (mEnemysList[y][x].x <= playerPos.x + 700.0f)
 				{
 					// 敵キャラのインスタンス作成
+					class Goomba* mGoomba = new Goomba(GetGame());
+					mGoomba->SetPosition(Vector2(mEnemysList[y][x].x, mEnemysList[y][x].y));
+					mGoomba->SetScale(1.0f);
 
 					// mEnemysListから削除する要素を入れる
 					deleteEnemy.back().emplace_back(x);
@@ -147,18 +151,31 @@ bool StageManager::GetStageLayer(const std::vector<std::string>& filenames, cons
 		c++;
 	}
 
-	for (size_t y = 0; y < mTileBrockSets.size(); y++)
+	for (size_t y = 0; y < mTileBrockSets.size() - 1; y++)
 	{
 		mBrockList.emplace_back();
 		for (size_t x = 0; x < mTileBrockSets[y].size(); x++)
 		{
 			if (mTileBrockSets[y][x] != -1)
 			{
-				ObjectPos temp;
-				temp.x = x * TILE_WIDTH - 512.0f;
-				temp.y = 384.0f - y * TILE_WIDTH;
-				temp.ObjectType = mTileBrockSets[y][x];
-				mBrockList.back().emplace_back(temp);
+				if (mTileBrockSets[y][x] == 10)
+				{
+					// ゴールインスタンス作成
+					class Goal* goal = new Goal(GetGame());
+					goal->SetPosition(Vector2(x * TILE_WIDTH - 512.0f, 384.0f - y * TILE_WIDTH + 32.0f));
+					goal->SetScale(1.0f);
+					goal->CreateFlag();
+					GetGame()->SetGoal(goal);
+
+				}
+				else
+				{
+					ObjectPos temp;
+					temp.x = x * TILE_WIDTH - 512.0f;
+					temp.y = 384.0f - y * TILE_WIDTH;
+					temp.ObjectType = mTileBrockSets[y][x];
+					mBrockList.back().emplace_back(temp);
+				}
 			}
 		}
 	}
@@ -172,7 +189,7 @@ bool StageManager::GetStageLayer(const std::vector<std::string>& filenames, cons
 			{
 				ObjectPos temp;
 				temp.x = x * TILE_WIDTH - 512.0f;
-				temp.y = y * TILE_WIDTH - 384.0f;
+				temp.y = 384.0f - y * TILE_WIDTH;
 				temp.ObjectType = mTileBrockSets[y][x];
 				mEnemysList.back().emplace_back(temp);
 			}

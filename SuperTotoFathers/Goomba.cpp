@@ -1,11 +1,11 @@
 #include "Goomba.h"
-#include "Game.h"
 #include "Texture.h"
 #include "AnimSpriteComponent.h"
 #include "MoveComponent.h"
 #include "BoxComponent.h"
 #include "CircleComponent.h"
 #include "PhysWorld.h"
+#include "CameraActor.h"
 
 
 Goomba::Goomba(Game* game)
@@ -45,11 +45,12 @@ Goomba::Goomba(Game* game)
 	mCircleComp = new CircleComponent(this);
 	mCircleComp->SetObjectCircle(myCircle);
 
-	enemyCollision temp;
-	temp.mCircle = mCircleComp;
-	temp.mOwner = this;
+	game->SetEnemys(mCircleComp);
+}
 
-	game->SetEnemys(temp);
+Goomba::~Goomba()
+{
+	GetGame()->RemoveEnemy(mCircleComp);
 }
 
 void Goomba::UpdateActor(float deltaTime)
@@ -129,6 +130,14 @@ void Goomba::UpdateActor(float deltaTime)
 			SetPosition(pos);
 			mBoxComp->OnUpdateWorldTransform();
 		}
+	}
+
+	// 画面の画面外に出たらインスタンスを削除
+	float cameraPos = GetGame()->GetCameraActor()->GetBeforeX();
+	Vector2 currentPos = GetPosition();
+	if (currentPos.x < -cameraPos - 573.0f)
+	{
+		SetState(State::EDead);
 	}
 }
 

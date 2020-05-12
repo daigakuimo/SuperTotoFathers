@@ -25,6 +25,8 @@ public:
 
 private:
 
+	bool mIsPutOutItem;
+
 	ContainItem mContainItem;
 
 	class BoxComponent* mBoxComp;

@@ -6,6 +6,7 @@
 #include "VertexArray.h"
 #include "BoxComponent.h"
 #include "Game.h"
+#include "Goal.h"
 
 TileMapComponent::TileMapComponent(class Actor* owner, int drawOrder)
 	:SpriteComponent(owner, drawOrder)

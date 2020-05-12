@@ -15,6 +15,7 @@
 #include "BoxComponent.h"
 #include "CircleComponent.h"
 #include "StageManager.h"
+#include "Item.h"
 
 
 Game::Game()
@@ -231,8 +232,8 @@ void Game::CreateSpriteVerts()
 	float vertices[] = {
 		-0.5f,  0.5f, 0.f, 0.f, 0.0f, // top left
 		 0.5f,  0.5f, 0.f, 1.f, 0.0f, // top right
-		 0.5f, -0.5f, 0.f, 1.f, 1.f, // bottom right
-		-0.5f, -0.5f, 0.f, 0.f, 1.f  // bottom left
+		 0.5f, -0.5f, 0.f, 1.f, 1.f,  // bottom right
+		-0.5f, -0.5f, 0.f, 0.f, 1.f   // bottom left
 	};
 
 	unsigned int indices[] = {
@@ -252,10 +253,6 @@ void Game::LoadData()
 	mCameraActor = new CameraActor(this);
 	mCameraActor->SetActor(mPlayer);
 
-	mGoomba = new Goomba(this);
-	mGoomba->SetPosition(Vector2(600.0f, -244.0f));
-	mGoomba->SetScale(1.0f);
-
 	mStage = new StageManager(this);
 	mStage->SetPosition(Vector2(0.0f, 0.0f));
 	mStage->SetPlayer(mPlayer);
@@ -264,7 +261,6 @@ void Game::LoadData()
 	class Texture* tiletex = GetTexture("../Assets/TileMap1.png");
 	tm->SetTileMap(tiletex);
 	tm->SetChasePlayer(mPlayer);
-	
 }
 
 void Game::UnloadData()
@@ -380,6 +376,15 @@ void Game::RemoveSprite(SpriteComponent * sprite)
 	mSprites.erase(iter);
 }
 
+void Game::RemoveEnemy(class CircleComponent* circle)
+{
+	auto iter = std::find(mEnemys.begin(), mEnemys.end(), circle);
+	if (iter != mEnemys.end())
+	{
+		mEnemys.erase(iter);
+	}
+}
+
 void Game::RemoveBrock(class Brock* brock)
 {
 	auto iter = std::find(mBrocks.begin(), mBrocks.end(), brock);
@@ -389,9 +394,11 @@ void Game::RemoveBrock(class Brock* brock)
 	}
 }
 
-enemyCollision::enemyCollision()
-	:mCircle(nullptr)
-	, mOwner(nullptr)
+void Game::RemoveItem(class Item* item)
 {
-
+	auto iter = std::find(mItems.begin(), mItems.end(), item);
+	if (iter != mItems.end())
+	{
+		mItems.erase(iter);
+	}
 }

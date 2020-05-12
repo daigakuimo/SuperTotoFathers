@@ -1,10 +1,12 @@
 #pragma once
 #include "Actor.h"
+#include "Game.h"
 
 class Goomba : public Actor
 {
 public:
 	Goomba(class Game* game);
+	~Goomba();
 
 	void UpdateActor(float deltaTime) override;
 	void ActorInput(const uint8_t* keyState) override;

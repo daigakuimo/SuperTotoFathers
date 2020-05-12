@@ -7,13 +7,6 @@
 #include <glew.h>
 
 
-struct enemyCollision
-{
-	enemyCollision();
-	class CircleComponent* mCircle;
-	class Actor* mOwner;
-};
-
 class Game
 {
 public:
@@ -37,12 +30,20 @@ public:
 	std::vector<class BoxComponent*> GetStageBoxes() { return mStageBoxes; }
 	void SetStageBoxes(class BoxComponent* box) { mStageBoxes.emplace_back(box); }
 
-	std::vector<enemyCollision> GetEnemys() { return mEnemys; }
-	void SetEnemys(enemyCollision info) { mEnemys.emplace_back(info); }
+	std::vector<class CircleComponent*> GetEnemys() { return mEnemys; }
+	void SetEnemys(class CircleComponent* circle) { mEnemys.emplace_back(circle); }
+	void RemoveEnemy(class CircleComponent* circle);
 
 	std::vector<class Brock*> GetBrocks() { return mBrocks; }
 	void SetBrock(class Brock* brock) { mBrocks.emplace_back(brock); }
 	void RemoveBrock(class Brock* brock);
+
+	std::vector<class Item*> GetItems() { return mItems; }
+	void SetItem(class Item* item) { mItems.emplace_back(item); }
+	void RemoveItem(class Item* item);
+
+	class Goal* GetGoal() { return mGoal; }
+	void SetGoal(class Goal* goal) { mGoal = goal; }
 
 
 private:
@@ -64,7 +65,9 @@ private:
 
 	std::vector<class Brock*> mBrocks;
 
-	std::vector<enemyCollision> mEnemys;
+	std::vector<class CircleComponent*> mEnemys;
+
+	std::vector<class Item*> mItems;
 
 	std::unordered_map<std::string, class Texture*> mTextures;
 
@@ -85,6 +88,8 @@ private:
 	class PhysWorld* mPhysWorld;
 
 	class StageManager* mStage;
+
+	class Goal* mGoal;
 
 	// Game-specific code
 	class CameraActor* mCameraActor;
