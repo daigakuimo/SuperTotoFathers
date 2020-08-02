@@ -14,41 +14,43 @@ InputComponent::InputComponent(class Actor* owner)
 
 void InputComponent::ProcessInput(const uint8_t* keyState)
 {
-	// Calculate forward speed for MoveComponent
-	float moveForce = 80.0f;
-	if (keyState[mDashKey])
+	if (!((mOwner->GetActionState() == Actor::ActionState::EDeath) || (mOwner->GetActionState() == Actor::ActionState::EGoal)))
 	{
-		moveForce = 120.0f;
-	}
-
-	Vector2 force = Vector2::Zero;
-	if (keyState[mForwardKey])
-	{
-		force = Vector2(moveForce, 0.0f);
-	}
-	if (keyState[mBackKey])
-	{
-		force = Vector2(-moveForce, 0.0f);
-	}
-	AddForce(force);
-	//SetForwardSpeed(force);
-
-	// Calculate jump 
-	SetIsPushJumpKey(false);
-	if (keyState[mJumpKey])
-	{
-		if (GetCanJump() && !mIsPrevJumpKey)
+		// Calculate forward speed for MoveComponent
+		float moveForce = 80.0f;
+		if (keyState[mDashKey])
 		{
-			SetIsPushJumpKey(true);
-			SetCanJump(false);
-			SetJumpPower(250.0f);
-			/*SDL_Log("ccc");
-			SDL_Log("");*/
+			moveForce = 120.0f;
 		}
-		SetPrevJumpKey(true);
+
+		Vector2 force = Vector2::Zero;
+		if (keyState[mForwardKey])
+		{
+			force = Vector2(moveForce, 0.0f);
+		}
+		if (keyState[mBackKey])
+		{
+			force = Vector2(-moveForce, 0.0f);
+		}
+		AddForce(force);
+		//SetForwardSpeed(force);
+
+		// Calculate jump 
+		SetIsPushJumpKey(false);
+		if (keyState[mJumpKey])
+		{
+			if (GetCanJump() && !mIsPrevJumpKey)
+			{
+				SetIsPushJumpKey(true);
+				SetCanJump(false);
+				SetJumpPower(250.0f);
+			}
+			SetPrevJumpKey(true);
+		}
+		else
+		{
+			SetPrevJumpKey(false);
+		}
 	}
-	else
-	{
-		SetPrevJumpKey(false);
-	}
+
 }

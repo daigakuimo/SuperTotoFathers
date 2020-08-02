@@ -46,7 +46,6 @@ Brock::Brock(class Game* game, int item)
 	mBoxComp->SetShouldRotate(false);
 
 	GetGame()->SetBrock(this);
-	SDL_Log("set");
 }
 
 Brock::~Brock()

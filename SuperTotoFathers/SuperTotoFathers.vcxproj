@@ -162,6 +162,7 @@
     <ClCompile Include="Brock.cpp" />
     <ClCompile Include="CameraActor.cpp" />
     <ClCompile Include="CircleComponent.cpp" />
+    <ClCompile Include="Coin.cpp" />
     <ClCompile Include="Collision.cpp" />
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="Game.cpp" />
@@ -194,6 +195,7 @@
     <ClInclude Include="Brock.h" />
     <ClInclude Include="CameraActor.h" />
     <ClInclude Include="CircleComponent.h" />
+    <ClInclude Include="Coin.h" />
     <ClInclude Include="Collision.h" />
     <ClInclude Include="Component.h" />
     <ClInclude Include="Game.h" />

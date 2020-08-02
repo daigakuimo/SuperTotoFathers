@@ -10,6 +10,15 @@
 class Game
 {
 public:
+
+	enum Scene
+	{
+		ETitle,
+		EMain,
+		EGameOver,
+		EEnd
+	};
+
 	Game();
 
 	bool Initialize();
@@ -44,6 +53,10 @@ public:
 
 	class Goal* GetGoal() { return mGoal; }
 	void SetGoal(class Goal* goal) { mGoal = goal; }
+
+	void ChangeSceneToMain() { mScene = Scene::EMain; }
+	void ChangeSceneToEnd() { mScene = Scene::EEnd; }
+	void ChangeSceneToTitl() { mScene = Scene::ETitle; }
 
 
 private:
@@ -93,6 +106,8 @@ private:
 
 	// Game-specific code
 	class CameraActor* mCameraActor;
+
+	Scene mScene;
 };
 
 

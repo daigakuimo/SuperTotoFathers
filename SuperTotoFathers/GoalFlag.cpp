@@ -12,7 +12,7 @@ GoalFlag::GoalFlag(class Game* game)
 
 	mMoveComp = new MoveComponent(this);
 	mMoveComp->SetMass(1.0f);
-	mMoveComp->SetVelocityLimit(Vector2(70.0f, 70.0f));
+	mMoveComp->SetVelocityLimit(Vector2(20.0f, 200.0f));
 
 
 }
@@ -24,7 +24,7 @@ void GoalFlag::UpdateActor(float deltaTime)
 		// ƒS[ƒ‹ƒ|[ƒ‹‚Ìˆê”Ô‚µ‚½‚Ü‚Å—‚¿‚é
 		if (GetFirstFlagPosY() - GetPosition().y <= 8.0f * 64.0f)
 		{
-			Vector2 force = Vector2(0.0f, -100.0f);
+			Vector2 force = Vector2(0.0f, -200.0f);
 			mMoveComp->AddForce(force);
 		}
 		else

@@ -19,6 +19,7 @@ public:
 		EWalk,
 		EJump,
 		EFall,
+		EGoal,
 	};
 
 	Actor(class Game* game);

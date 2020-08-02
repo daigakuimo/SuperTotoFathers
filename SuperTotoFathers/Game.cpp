@@ -95,9 +95,12 @@ bool Game::Initialize()
 	// Create quad for drawing sprites
 	CreateSpriteVerts();
 
+	mScene = Scene::ETitle;
+
 	LoadData();
 
 	mTicksCount = SDL_GetTicks();
+
 
 	return true;
 }
@@ -131,6 +134,16 @@ void Game::ProcessInput()
 		mIsRunning = false;
 	}
 
+	if (mScene == Scene::ETitle)
+	{
+		if (keyState[SDL_SCANCODE_SPACE])
+		{
+			UnloadData();
+			ChangeSceneToMain();
+			LoadData();
+		}
+	}
+	
 	mUpdatingActors = true;
 	for (auto actor : mActors)
 	{
@@ -246,22 +259,35 @@ void Game::CreateSpriteVerts()
 
 void Game::LoadData()
 {
-	mPlayer = new Player(this);
-	mPlayer->SetPosition(Vector2(0.0f, -243.0f));
-	mPlayer->SetScale(1.0f);
+	if (mScene == Scene::ETitle)
+	{
 
-	mCameraActor = new CameraActor(this);
-	mCameraActor->SetActor(mPlayer);
+	}
+	else if (mScene == Scene::EMain)
+	{
+		mPlayer = new Player(this);
+		mPlayer->SetPosition(Vector2(0.0f, -243.0f));
+		mPlayer->SetScale(1.0f);
 
-	mStage = new StageManager(this);
-	mStage->SetPosition(Vector2(0.0f, 0.0f));
-	mStage->SetPlayer(mPlayer);
-	// Create the tile map
-	TileMapComponent* tm = new TileMapComponent(mStage);
-	class Texture* tiletex = GetTexture("../Assets/TileMap1.png");
-	tm->SetTileMap(tiletex);
-	tm->SetChasePlayer(mPlayer);
+		mCameraActor = new CameraActor(this);
+		mCameraActor->SetActor(mPlayer);
+
+		mStage = new StageManager(this);
+		mStage->SetPosition(Vector2(0.0f, 0.0f));
+		mStage->SetPlayer(mPlayer);
+		// Create the tile map
+		TileMapComponent* tm = new TileMapComponent(mStage);
+		class Texture* tiletex = GetTexture("../Assets/TileMap1.png");
+		tm->SetTileMap(tiletex);
+		tm->SetChasePlayer(mPlayer);
+	}
+	else if (mScene == Scene::EEnd)
+	{
+
+	}
+	
 }
+
 
 void Game::UnloadData()
 {
