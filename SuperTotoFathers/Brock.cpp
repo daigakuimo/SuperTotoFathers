@@ -6,6 +6,7 @@
 #include "BoxComponent.h"
 #include "CameraActor.h"
 #include "Mushroom.h"
+#include "Coin.h"
 
 Brock::Brock(class Game* game, int item)
 	: Actor(game)
@@ -69,6 +70,9 @@ void Brock::UpdateActor(float deltaTime)
 		else if (mContainItem == ContainItem::EHatenaCoin)
 		{
 			mIsPutOutItem = true;
+			class Coin* coin = new Coin(GetGame());
+			coin->SetPosition(Vector2(GetPosition().x, GetPosition().y + 64.0f));
+			coin->SetScale(1.0f);
 		}
 		else
 		{

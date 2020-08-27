@@ -5,6 +5,7 @@
 #include <vector>
 #include "Math.h"
 #include <glew.h>
+#include "SoundEvent.h"
 
 
 class Game
@@ -58,6 +59,8 @@ public:
 	void ChangeSceneToEnd() { mScene = Scene::EEnd; }
 	void ChangeSceneToTitl() { mScene = Scene::ETitle; }
 
+	class AudioSystem* GetAudioSystem() { return mAudioSystem; }
+
 
 private:
 	void ProcessInput();
@@ -108,6 +111,10 @@ private:
 	class CameraActor* mCameraActor;
 
 	Scene mScene;
+
+	class AudioSystem* mAudioSystem;
+	SoundEvent mMusicEvent;
+	SoundEvent mReverbSnap;
 };
 
 

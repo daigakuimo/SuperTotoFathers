@@ -4,6 +4,7 @@
 #include "Goomba.h"
 #include "Goal.h"
 
+
 StageManager::StageManager(class Game* game)
 	:Actor(game)
 	, mPlayer(nullptr)

@@ -16,7 +16,8 @@
 #include "CircleComponent.h"
 #include "StageManager.h"
 #include "Item.h"
-
+#include "AudioSystem.h"
+#include "AudioComponent.h"
 
 Game::Game()
 	:mWindow(nullptr)
@@ -31,6 +32,7 @@ Game::Game()
 	, mIsRunning(true)
 	, mUpdatingActors(false)
 	, mTicksCount(0)
+	, mAudioSystem(nullptr)
 {
 
 }
@@ -96,6 +98,17 @@ bool Game::Initialize()
 	CreateSpriteVerts();
 
 	mScene = Scene::ETitle;
+
+	// Create the audio system
+	mAudioSystem = new AudioSystem(this);
+	if (!mAudioSystem->Initialize())
+	{
+		SDL_Log("Failed to initialize audio system");
+		mAudioSystem->Shutdown();
+		delete mAudioSystem;
+		mAudioSystem = nullptr;
+		return false;
+	}
 
 	LoadData();
 
@@ -197,6 +210,10 @@ void Game::UpdateGame()
 	{
 		delete actor;
 	}
+
+	// Update audio system
+	mAudioSystem->Update(deltaTime);
+
 }
 
 
@@ -261,7 +278,8 @@ void Game::LoadData()
 {
 	if (mScene == Scene::ETitle)
 	{
-
+		// Start music
+		mMusicEvent = mAudioSystem->PlayEvent("event:/Music");
 	}
 	else if (mScene == Scene::EMain)
 	{
@@ -280,10 +298,14 @@ void Game::LoadData()
 		class Texture* tiletex = GetTexture("../Assets/TileMap1.png");
 		tm->SetTileMap(tiletex);
 		tm->SetChasePlayer(mPlayer);
+
+		// Start music
+		mMusicEvent = mAudioSystem->PlayEvent("event:/Music");
 	}
 	else if (mScene == Scene::EEnd)
 	{
-
+		// Start music
+		mMusicEvent = mAudioSystem->PlayEvent("event:/Music");
 	}
 	
 }
@@ -304,6 +326,12 @@ void Game::UnloadData()
 		i.second->Unload();
 		delete i.second;
 	}
+
+	if (mAudioSystem)
+	{
+		mAudioSystem->Shutdown();
+	}
+
 	mTextures.clear();
 }
 
