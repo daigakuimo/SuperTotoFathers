@@ -8,7 +8,7 @@ public:
 
 	void UpdateActor(float deltaTime) override;
 
-	//void CollisionPlayer(class Actor* actor) override;
+	void CollisionPlayer(class Actor* actor) override;
 
 private:
 	class MoveComponent* mc;

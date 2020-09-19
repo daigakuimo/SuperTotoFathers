@@ -10,6 +10,8 @@
 #include "Brock.h"
 #include "Item.h"
 #include "Goal.h"
+#include "AudioSystem.h"
+#include "AudioComponent.h"
 
 Player::Player(Game* game)
 	:Actor(game)
@@ -51,6 +53,11 @@ Player::Player(Game* game)
 		Vector3(15.0f, 32.0f, 0.f));
 	mBoxComp->SetObjectBox(myBox);
 	mBoxComp->SetShouldRotate(false);
+
+	mAudioComp = new AudioComponent(this);
+	mLastFootstep = 0.0f;
+	mFootstep = mAudioComp->PlayEvent("event:/Footstep");
+	mFootstep.SetPaused(true);
 
 }
 
@@ -254,6 +261,15 @@ void Player::UpdateActor(float deltaTime)
 			goal->SetActionState(ActionState::EWalk);
 		}
 
+	}
+
+	// Play the footstep if we're moving and haven't recently
+	mLastFootstep -= deltaTime;
+	if (!Math::NearZero(ic->GetForwardSpeed().x) && mLastFootstep <= 0.0f)
+	{
+		mFootstep.SetPaused(false);
+		mFootstep.Restart();
+		mLastFootstep = 0.5f;
 	}
 
 

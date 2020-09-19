@@ -151,7 +151,7 @@ void Game::ProcessInput()
 	{
 		if (keyState[SDL_SCANCODE_SPACE])
 		{
-			UnloadData();
+			// UnloadData();
 			ChangeSceneToMain();
 			LoadData();
 		}
@@ -195,6 +195,7 @@ void Game::UpdateGame()
 	}
 	mPendingActors.clear();
 
+
 	// Add any dead actors to a temp vector
 	std::vector<Actor*> deadActors;
 	for (auto actor : mActors)
@@ -213,7 +214,6 @@ void Game::UpdateGame()
 
 	// Update audio system
 	mAudioSystem->Update(deltaTime);
-
 }
 
 
@@ -279,7 +279,7 @@ void Game::LoadData()
 	if (mScene == Scene::ETitle)
 	{
 		// Start music
-		mMusicEvent = mAudioSystem->PlayEvent("event:/Music");
+		// mMusicEvent = mAudioSystem->PlayEvent("event:/Music");
 	}
 	else if (mScene == Scene::EMain)
 	{
@@ -300,12 +300,12 @@ void Game::LoadData()
 		tm->SetChasePlayer(mPlayer);
 
 		// Start music
-		mMusicEvent = mAudioSystem->PlayEvent("event:/Music");
+		mMusicEvent = mAudioSystem->PlayEvent("event:/canon");
 	}
 	else if (mScene == Scene::EEnd)
 	{
 		// Start music
-		mMusicEvent = mAudioSystem->PlayEvent("event:/Music");
+		//mMusicEvent = mAudioSystem->PlayEvent("event:/Music");
 	}
 	
 }
@@ -327,10 +327,6 @@ void Game::UnloadData()
 		delete i.second;
 	}
 
-	if (mAudioSystem)
-	{
-		mAudioSystem->Shutdown();
-	}
 
 	mTextures.clear();
 }
@@ -365,6 +361,10 @@ void Game::Shutdown()
 	delete mSpriteVerts;
 	mSpriteShader->UnLoad();
 	delete mSpriteShader;
+	if (mAudioSystem)
+	{
+		mAudioSystem->Shutdown();
+	}
 	SDL_GL_DeleteContext(mContext);
 	SDL_DestroyWindow(mWindow);
 	SDL_Quit();

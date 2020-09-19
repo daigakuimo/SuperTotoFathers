@@ -52,8 +52,8 @@ bool AudioSystem::Initialize()
 	mSystem->getLowLevelSystem(&mLowLevelSystem);
 
 	// Load the master banks (strings first)
-	LoadBank("Assets/Master Bank.strings.bank");
-	LoadBank("Assets/Master Bank.bank");
+	LoadBank("../Assets/Master Bank.strings.bank");
+	LoadBank("../Assets/Master Bank.bank");
 
 	return true;
 }
@@ -128,6 +128,11 @@ void AudioSystem::LoadBank(const std::string& name)
 				mBuses.emplace(busName, bus);
 			}
 		}
+	}
+	else
+	{
+		SDL_Log("%d", FMOD_RESULT::FMOD_ERR_VERSION);
+		SDL_Log("%d", result);
 	}
 }
 
@@ -209,6 +214,7 @@ void AudioSystem::UnloadAllBanks()
 
 SoundEvent AudioSystem::PlayEvent(const std::string& name)
 {
+	SDL_Log("player event");
 	unsigned int retID = 0;
 	auto iter = mEvents.find(name);
 	if (iter != mEvents.end())

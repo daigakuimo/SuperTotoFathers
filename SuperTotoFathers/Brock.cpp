@@ -7,6 +7,7 @@
 #include "CameraActor.h"
 #include "Mushroom.h"
 #include "Coin.h"
+#include <SDL_Log.h>
 
 Brock::Brock(class Game* game, int item)
 	: Actor(game)
@@ -88,5 +89,4 @@ void Brock::UpdateActor(float deltaTime)
 	{
 		SetState(State::EDead);
 	}
-	
 }

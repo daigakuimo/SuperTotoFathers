@@ -6,6 +6,7 @@
 #include "CameraActor.h"
 #include "MoveComponent.h"
 #include "PhysWorld.h"
+#include <SDL_Log.h>
 
 Coin::Coin(class Game* game)
 	:Item(game)
@@ -13,6 +14,10 @@ Coin::Coin(class Game* game)
 {
 	SpriteComponent* sc = new SpriteComponent(this);
 	sc->SetTexture(game->GetTexture("../Assets/Coin-1.png"));
+
+	AABB myBox(Vector3(-16.0f, -32.0f, 0.f),
+		Vector3(16.0f, 32.0f, 0.f));
+	SetBoxComp(myBox);
 
 	mc = new MoveComponent(this);
 	mc->SetMass(1.0f);
@@ -33,5 +38,13 @@ void Coin::UpdateActor(const float deltatime)
 		SetState(State::EDead);
 	}
 }
+
+void Coin::CollisionPlayer(class Actor* actor)
+{
+	//actor->SetScale(2.0f);
+	SetState(State::EDead);
+}
+
+
 
 
