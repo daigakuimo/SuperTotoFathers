@@ -55,9 +55,12 @@ Player::Player(Game* game)
 	mBoxComp->SetShouldRotate(false);
 
 	mAudioComp = new AudioComponent(this);
-	mLastFootstep = 0.0f;
-	mFootstep = mAudioComp->PlayEvent("event:/Footstep");
-	mFootstep.SetPaused(true);
+	//mLastFootstep = 0.0f;
+	//mFootstep = mAudioComp->PlayEvent("event:/death");
+	//mFootstep.SetPaused(true);
+
+	mSoundDeath = mAudioComp->PlayEvent("event:/death");
+	mSoundDeath.SetPaused(true);
 
 }
 
@@ -220,6 +223,8 @@ void Player::UpdateActor(float deltaTime)
 				{
 					SetActionState(ActionState::EDeath);
 					ic->SetJumpPower(100.0f);
+					mSoundDeath.SetPaused(false);
+					mSoundDeath.Restart();
 				}
 			}
 		}
@@ -264,13 +269,15 @@ void Player::UpdateActor(float deltaTime)
 	}
 
 	// Play the footstep if we're moving and haven't recently
-	mLastFootstep -= deltaTime;
-	if (!Math::NearZero(ic->GetForwardSpeed().x) && mLastFootstep <= 0.0f)
-	{
-		mFootstep.SetPaused(false);
-		mFootstep.Restart();
-		mLastFootstep = 0.5f;
-	}
+	//mLastFootstep -= deltaTime;
+	//if (!Math::NearZero(ic->GetForwardSpeed().x) && mLastFootstep <= 0.0f)
+	//{
+		//mFootstep.SetPaused(false);
+		//mFootstep.Restart();
+		//mLastFootstep = 0.5f;
+	//}
+
+
 
 
 

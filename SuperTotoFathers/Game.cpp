@@ -300,7 +300,7 @@ void Game::LoadData()
 		tm->SetChasePlayer(mPlayer);
 
 		// Start music
-		mMusicEvent = mAudioSystem->PlayEvent("event:/canon");
+		mMusicEvent = mAudioSystem->PlayEvent("event:/bgm");
 	}
 	else if (mScene == Scene::EEnd)
 	{
