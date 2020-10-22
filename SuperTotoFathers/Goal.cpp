@@ -16,7 +16,7 @@ Goal::Goal(Game* game)
 	mBoxComp->SetShouldRotate(false);
 
 	SpriteComponent* sc = new SpriteComponent(this);
-	sc->SetTexture(game->GetTexture("../Assets/goal.png"));
+	sc->SetTexture(game->GetTexture("Assets/goal.png"));
 }
 
 void Goal::UpdateActor(float deltaTime)

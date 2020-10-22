@@ -8,7 +8,7 @@ GoalFlag::GoalFlag(class Game* game)
 	:Actor(game)
 {
 	SpriteComponent* sc = new SpriteComponent(this);
-	sc->SetTexture(game->GetTexture("../Assets/flag.png"));
+	sc->SetTexture(game->GetTexture("Assets/flag.png"));
 
 	mMoveComp = new MoveComponent(this);
 	mMoveComp->SetMass(1.0f);

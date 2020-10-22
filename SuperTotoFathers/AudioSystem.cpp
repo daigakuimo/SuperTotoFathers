@@ -52,8 +52,8 @@ bool AudioSystem::Initialize()
 	mSystem->getLowLevelSystem(&mLowLevelSystem);
 
 	// Load the master banks (strings first)
-	LoadBank("../Assets/Master Bank.strings.bank");
-	LoadBank("../Assets/Master Bank.bank");
+	LoadBank("Assets/Master Bank.strings.bank");
+	LoadBank("Assets/Master Bank.bank");
 
 	return true;
 }

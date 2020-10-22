@@ -9,7 +9,7 @@
 class TileMapComponent : public SpriteComponent
 {
 public:
-	TileMapComponent(class Actor* owner, int drawOrder = 10);
+	TileMapComponent(class Actor* owner, std::vector<std::string> filenames, int drawOrder = 10);
 
 	// void Update(float deltaTime) override
 	void Draw(class Shader* shader, class VertexArray* vertex) override;
@@ -56,6 +56,8 @@ private:
 
 	// All tile map
 	std::vector<std::vector<std::vector<tileMapVertex>>> mMapDatas;
+
+	std::vector<std::string> mFilenames;
 
 	// width/height of tile set 
 	int mTexWidth;

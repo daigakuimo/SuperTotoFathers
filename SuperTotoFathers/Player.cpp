@@ -20,12 +20,12 @@ Player::Player(Game* game)
 	// Create an animation sprite compoent
 	AnimSpriteComponent* asc = new AnimSpriteComponent(this);
 	std::vector<class Texture*> anims = {
-		game->GetTexture("../Assets/Toto1-1.png"),
-		game->GetTexture("../Assets/Toto1-2.png"),
-		game->GetTexture("../Assets/Toto1-3.png"),
-		game->GetTexture("../Assets/Toto1-4.png"),
-		game->GetTexture("../Assets/Toto1-5.png"),
-		game->GetTexture("../Assets/Toto1-6.png"),
+		game->GetTexture("Assets/Toto1-1.png"),
+		game->GetTexture("Assets/Toto1-2.png"),
+		game->GetTexture("Assets/Toto1-3.png"),
+		game->GetTexture("Assets/Toto1-4.png"),
+		game->GetTexture("Assets/Toto1-5.png"),
+		game->GetTexture("Assets/Toto1-6.png"),
 	};
 
 	asc->SetAnimTextures(anims);
@@ -223,8 +223,11 @@ void Player::UpdateActor(float deltaTime)
 				{
 					SetActionState(ActionState::EDeath);
 					ic->SetJumpPower(100.0f);
+					ic->SetForwardSpeed(Vector2(0.f, 0.f));
 					mSoundDeath.SetPaused(false);
 					mSoundDeath.Restart();
+
+					GetGame()->stopBGM();
 				}
 			}
 		}

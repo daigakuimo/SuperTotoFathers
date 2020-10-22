@@ -8,14 +8,15 @@
 #include "Game.h"
 #include "Goal.h"
 
-TileMapComponent::TileMapComponent(class Actor* owner, int drawOrder)
+TileMapComponent::TileMapComponent(class Actor* owner, std::vector<std::string> filenames, int drawOrder)
 	:SpriteComponent(owner, drawOrder)
-	,mTileTexture(nullptr)
-	,mDrawOrder(drawOrder)
-	,mTexHeight(0)
-	,mTexWidth(0)
-	,mBeforeTileX(0)
-	,mIsCreatingRect(false)	
+	, mTileTexture(nullptr)
+	, mDrawOrder(drawOrder)
+	, mTexHeight(0)
+	, mTexWidth(0)
+	, mBeforeTileX(0)
+	, mIsCreatingRect(false)
+	, mFilenames(filenames)
 {
 
 }
@@ -146,12 +147,10 @@ void TileMapComponent::SetTileMap(class Texture* tile_texture)
 	mTexHeight = 256;
 
 	bool status = false;
-	std::vector<std::string> filenames = {
-		"../Assets/MapLayer.csv"
-	};
+
 
 	// CSVファイルの内容を取得する
-	status = GetMapLayer(filenames, ',');
+	status = GetMapLayer(mFilenames, ',');
 
 	rectangle rect;
 

@@ -11,8 +11,8 @@ StageManager::StageManager(class Game* game)
 	, mBeforeTileX(-100)
 {
 	std::vector<std::string> filenames = {
-		"../Assets/BrockLayer.csv",
-		"../Assets/EnemysLayer.csv"
+		"Assets/BrockLayer.csv",
+		"Assets/EnemysLayer.csv"
 	};
 
 	GetStageLayer(filenames);

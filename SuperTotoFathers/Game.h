@@ -61,6 +61,8 @@ public:
 
 	class AudioSystem* GetAudioSystem() { return mAudioSystem; }
 
+	void stopBGM() { mMusicEvent.SetPaused(true);}
+
 
 private:
 	void ProcessInput();

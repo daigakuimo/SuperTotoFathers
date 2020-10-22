@@ -10,10 +10,10 @@
 
 Coin::Coin(class Game* game)
 	:Item(game)
-	, moveSpeed(100.0f, 0.0f)
+	, moveSpeed(0.0f, 100.0f)
 {
 	SpriteComponent* sc = new SpriteComponent(this);
-	sc->SetTexture(game->GetTexture("../Assets/Coin-1.png"));
+	sc->SetTexture(game->GetTexture("Assets/Coin-1.png"));
 
 	AABB myBox(Vector3(-16.0f, -32.0f, 0.f),
 		Vector3(16.0f, 32.0f, 0.f));

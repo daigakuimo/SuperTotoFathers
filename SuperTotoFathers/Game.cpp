@@ -151,7 +151,7 @@ void Game::ProcessInput()
 	{
 		if (keyState[SDL_SCANCODE_SPACE])
 		{
-			// UnloadData();
+			UnloadData();
 			ChangeSceneToMain();
 			LoadData();
 		}
@@ -245,7 +245,7 @@ void Game::GenerateOutput()
 bool Game::LoadShaders()
 {
 	mSpriteShader = new Shader();
-	if (!mSpriteShader->Load("../SuperTotoFathers/Shaders/Sprite.vert", "../SuperTotoFathers/Shaders/Sprite.frag"))
+	if (!mSpriteShader->Load("Shaders/Sprite.vert", "Shaders/Sprite.frag"))
 	{
 		return false;
 	}
@@ -278,8 +278,32 @@ void Game::LoadData()
 {
 	if (mScene == Scene::ETitle)
 	{
-		// Start music
-		// mMusicEvent = mAudioSystem->PlayEvent("event:/Music");
+		Actor* act = new Actor(this);
+		act->SetPosition(Vector2(60.0f,100.0f));
+		act->SetScale(1.0f);
+		SpriteComponent* title = new SpriteComponent(act);
+		title->SetTexture(GetTexture("Assets/Title.png"));
+
+		Actor* b = new Actor(this);
+		b->SetPosition(Vector2(50.0f, -258.0f));
+		b->SetScale(1.0f);
+		SpriteComponent* toto = new SpriteComponent(b);
+		toto->SetTexture(GetTexture("Assets/Toto1-1.png"));
+
+
+
+		Actor* a = new Actor(this);
+		a->SetPosition(Vector2(00.0f, 0.0f));
+		mCameraActor = new CameraActor(this);
+		mCameraActor->SetActor(a);
+
+		std::vector<std::string> filenames = {
+		"Assets/TitleMap.csv"
+		};
+		TileMapComponent* tm = new TileMapComponent(a,filenames);
+		class Texture* tiletex = GetTexture("Assets/TileMap1.png");
+		tm->SetTileMap(tiletex);
+		tm->SetChasePlayer(a);
 	}
 	else if (mScene == Scene::EMain)
 	{
@@ -294,8 +318,11 @@ void Game::LoadData()
 		mStage->SetPosition(Vector2(0.0f, 0.0f));
 		mStage->SetPlayer(mPlayer);
 		// Create the tile map
-		TileMapComponent* tm = new TileMapComponent(mStage);
-		class Texture* tiletex = GetTexture("../Assets/TileMap1.png");
+		std::vector<std::string> filenames = {
+		"Assets/MapLayer.csv"
+		};
+		TileMapComponent* tm = new TileMapComponent(mStage, filenames);
+		class Texture* tiletex = GetTexture("Assets/TileMap1.png");
 		tm->SetTileMap(tiletex);
 		tm->SetChasePlayer(mPlayer);
 

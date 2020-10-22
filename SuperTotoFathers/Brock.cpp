@@ -23,10 +23,10 @@ Brock::Brock(class Game* game, int item)
 			// Create an animation sprite compoent
 			AnimSpriteComponent* asc = new AnimSpriteComponent(this);
 			std::vector<class Texture*> anims = {
-				game->GetTexture("../Assets/Hatena-1.png"),
-				game->GetTexture("../Assets/Hatena-2.png"),
-				game->GetTexture("../Assets/Hatena-3.png"),
-				game->GetTexture("../Assets/Hatena-4.png"),
+				game->GetTexture("Assets/Hatena-1.png"),
+				game->GetTexture("Assets/Hatena-2.png"),
+				game->GetTexture("Assets/Hatena-3.png"),
+				game->GetTexture("Assets/Hatena-4.png"),
 			};
 
 			asc->SetAnimTextures(anims);
@@ -36,7 +36,7 @@ Brock::Brock(class Game* game, int item)
 		}
 		default:
 			SpriteComponent* sc = new SpriteComponent(this);
-			sc->SetTexture(game->GetTexture("../Assets/Brock-2.png"));
+			sc->SetTexture(game->GetTexture("Assets/Brock-2.png"));
 			break;
 	}
 

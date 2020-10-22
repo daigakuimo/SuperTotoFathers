@@ -14,9 +14,9 @@ Goomba::Goomba(Game* game)
 {
 	AnimSpriteComponent* asc = new AnimSpriteComponent(this);
 	std::vector<class Texture*> anims = {
-		game->GetTexture("../Assets/Goomba-1.png"),
-		game->GetTexture("../Assets/Goomba-2.png"),
-		game->GetTexture("../Assets/Goomba-3.png"),
+		game->GetTexture("Assets/Goomba-1.png"),
+		game->GetTexture("Assets/Goomba-2.png"),
+		game->GetTexture("Assets/Goomba-3.png"),
 	};
 
 	asc->SetAnimTextures(anims);

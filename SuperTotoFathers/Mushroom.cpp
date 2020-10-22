@@ -12,7 +12,7 @@ Mushroom::Mushroom(class Game* game)
 	, moveSpeed(100.0f, 0.0f)
 {
 	SpriteComponent* sc = new SpriteComponent(this);
-	sc->SetTexture(game->GetTexture("../Assets/mushroom.png"));
+	sc->SetTexture(game->GetTexture("Assets/mushroom.png"));
 
 	AABB myBox(Vector3(-32.0f, -32.0f, 0.f),
 		Vector3(32.0f, 32.0f, 0.f));
