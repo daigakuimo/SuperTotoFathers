@@ -1,5 +1,6 @@
 #pragma once
 #include "Actor.h"
+#include "SoundEvent.h"
 
 class Goal : public Actor
 {
@@ -15,4 +16,9 @@ public:
 private:
 	class BoxComponent* mBoxComp;
 	class GoalFlag* mFlag;
+
+	class AudioComponent* mAudioComp;
+	SoundEvent mSoundGoal;
+
+	bool mFirstTouch = false;
 };

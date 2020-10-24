@@ -8,6 +8,7 @@
 #include "SoundEvent.h"
 
 
+
 class Game
 {
 public:
@@ -37,6 +38,8 @@ public:
 	class CameraActor* GetCameraActor() { return mCameraActor; }
 	class PhysWorld* GetPhysWorld() { return mPhysWorld; }
 
+	class Player* GetPlayer() { return mPlayer; }
+
 	std::vector<class BoxComponent*> GetStageBoxes() { return mStageBoxes; }
 	void SetStageBoxes(class BoxComponent* box) { mStageBoxes.emplace_back(box); }
 
@@ -55,13 +58,22 @@ public:
 	class Goal* GetGoal() { return mGoal; }
 	void SetGoal(class Goal* goal) { mGoal = goal; }
 
+	Scene GetScene() { return mScene; }
 	void ChangeSceneToMain() { mScene = Scene::EMain; }
 	void ChangeSceneToEnd() { mScene = Scene::EEnd; }
-	void ChangeSceneToTitl() { mScene = Scene::ETitle; }
+	void ChangeSceneToTitle() { mScene = Scene::ETitle; }
 
 	class AudioSystem* GetAudioSystem() { return mAudioSystem; }
 
-	void stopBGM() { mMusicEvent.SetPaused(true);}
+	void StopBGM() { mMusicEvent.SetPaused(true);}
+	void StartEndingBGM() {
+		mSoundEnding.SetPaused(false);  
+		mSoundEnding.Restart();
+	}
+
+	void RestartGame();
+
+	int GetEngingCount() { return mEndingCount; }
 
 
 private:
@@ -117,6 +129,9 @@ private:
 	class AudioSystem* mAudioSystem;
 	SoundEvent mMusicEvent;
 	SoundEvent mReverbSnap;
+	SoundEvent mSoundEnding;
+
+	int mEndingCount = 0;
 };
 
 

@@ -1,5 +1,6 @@
 #include "InputComponent.h"
 #include "Actor.h"
+#include "Game.h"
 #include <SDL_Log.h>
 
 InputComponent::InputComponent(class Actor* owner)
@@ -14,43 +15,64 @@ InputComponent::InputComponent(class Actor* owner)
 
 void InputComponent::ProcessInput(const uint8_t* keyState)
 {
-	if (!((mOwner->GetActionState() == Actor::ActionState::EDeath) || (mOwner->GetActionState() == Actor::ActionState::EGoal)))
+	if (GetOwner()->GetGame()->GetScene() == Game::Scene::EMain)
 	{
-		// Calculate forward speed for MoveComponent
-		float moveForce = 80.0f;
-		if (keyState[mDashKey])
+		if (!((mOwner->GetActionState() == Actor::ActionState::EDeath) || (mOwner->GetActionState() == Actor::ActionState::EGoal)))
 		{
-			moveForce = 120.0f;
+			// Calculate forward speed for MoveComponent
+			float moveForce = 80.0f;
+			if (keyState[mDashKey])
+			{
+				moveForce = 120.0f;
+			}
+
+			Vector2 force = Vector2::Zero;
+			if (keyState[mForwardKey])
+			{
+				force = Vector2(moveForce, 0.0f);
+			}
+			if (keyState[mBackKey])
+			{
+				force = Vector2(-moveForce, 0.0f);
+			}
+			AddForce(force);
+			//SetForwardSpeed(force);
+
+			// Calculate jump 
+			SetIsPushJumpKey(false);
+			if (keyState[mJumpKey])
+			{
+				if (GetCanJump() && !mIsPrevJumpKey)
+				{
+					SetIsPushJumpKey(true);
+					SetCanJump(false);
+					SetJumpPower(530.0f);
+					GetOwner()->SetActionState(Actor::ActionState::EJump);
+				}
+				SetPrevJumpKey(true);
+			}
+			else
+			{
+				SetPrevJumpKey(false);
+			}
 		}
 
-		Vector2 force = Vector2::Zero;
-		if (keyState[mForwardKey])
+	}
+	else if(GetOwner()->GetGame()->GetScene() == Game::Scene::EEnd)
+	{
+		if (GetOwner()->GetGame()->GetEngingCount() < 66)
 		{
-			force = Vector2(moveForce, 0.0f);
-		}
-		if (keyState[mBackKey])
-		{
-			force = Vector2(-moveForce, 0.0f);
-		}
-		AddForce(force);
-		//SetForwardSpeed(force);
-
-		// Calculate jump 
-		SetIsPushJumpKey(false);
-		if (keyState[mJumpKey])
-		{
-			if (GetCanJump() && !mIsPrevJumpKey)
+			if (GetOwner()->GetGame()->GetEngingCount() < 3)
 			{
 				SetIsPushJumpKey(true);
 				SetCanJump(false);
-				SetJumpPower(250.0f);
+				SetJumpPower(30.0f);
+				GetOwner()->SetActionState(Actor::ActionState::EJump);
 			}
-			SetPrevJumpKey(true);
-		}
-		else
-		{
-			SetPrevJumpKey(false);
+			float moveForce = 80.0f;
+			Vector2 force = Vector2(moveForce, 0.0f);
+			AddForce(force);
 		}
 	}
-
+	
 }

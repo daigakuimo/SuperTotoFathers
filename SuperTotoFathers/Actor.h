@@ -1,4 +1,5 @@
 #pragma once
+
 #include <vector>
 #include "Math.h"
 
@@ -91,5 +92,8 @@ private:
 	// 当たり判定のコンポーネントを入れる
 	std::vector<class BoxComponent*> mBoxCompList;
 	std::vector<class CircleComponent*> mCircleCompList;
+
+
+
 
 };

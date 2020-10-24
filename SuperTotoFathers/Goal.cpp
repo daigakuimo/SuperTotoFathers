@@ -4,6 +4,8 @@
 #include "BoxComponent.h"
 #include "Texture.h"
 #include "GoalFlag.h"
+#include "AudioSystem.h"
+#include "AudioComponent.h"
 
 Goal::Goal(Game* game)
 	:Actor(game)
@@ -17,6 +19,10 @@ Goal::Goal(Game* game)
 
 	SpriteComponent* sc = new SpriteComponent(this);
 	sc->SetTexture(game->GetTexture("Assets/goal.png"));
+
+	mAudioComp = new AudioComponent(this);
+	mSoundGoal = mAudioComp->PlayEvent("event:/goalflag");
+	mSoundGoal.SetPaused(true);
 }
 
 void Goal::UpdateActor(float deltaTime)
@@ -24,6 +30,13 @@ void Goal::UpdateActor(float deltaTime)
 	if (GetActionState() == ActionState::EWalk)
 	{
 		mFlag->SetActionState(ActionState::EWalk);
+		if (!mFirstTouch)
+		{
+			mSoundGoal.SetPaused(false);
+			mSoundGoal.Restart();
+			mFirstTouch = true;
+		}
+		
 	}
 }
 

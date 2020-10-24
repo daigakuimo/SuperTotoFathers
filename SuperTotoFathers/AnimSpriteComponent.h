@@ -4,6 +4,7 @@
 #include <vector>
 #include "Actor.h"
 
+
 class AnimSpriteComponent : public SpriteComponent
 {
 public:

@@ -214,6 +214,11 @@ void Game::UpdateGame()
 
 	// Update audio system
 	mAudioSystem->Update(deltaTime);
+
+	if (mScene == Scene::EEnd)
+	{
+		mEndingCount++;
+	}
 }
 
 
@@ -328,6 +333,14 @@ void Game::LoadData()
 
 		// Start music
 		mMusicEvent = mAudioSystem->PlayEvent("event:/bgm");
+		mSoundEnding = mAudioSystem->PlayEvent("event:/ending");
+		mSoundEnding.SetPaused(true);
+
+		Actor* act = new Actor(this);
+		act->SetPosition(Vector2(12892.0f, -258.0f));
+		act->SetScale(1.0f);
+		SpriteComponent* title = new SpriteComponent(act);
+		title->SetTexture(GetTexture("Assets/TOTO1-1.png"));
 	}
 	else if (mScene == Scene::EEnd)
 	{
@@ -482,4 +495,11 @@ void Game::RemoveItem(class Item* item)
 	{
 		mItems.erase(iter);
 	}
+}
+
+void Game::RestartGame()
+{
+	UnloadData();
+	ChangeSceneToTitle();
+	LoadData();
 }

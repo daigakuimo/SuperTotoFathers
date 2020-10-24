@@ -42,9 +42,9 @@ Player::Player(Game* game)
 	ic->SetBackKey(SDL_SCANCODE_A);
 	ic->SetJumpKey(SDL_SCANCODE_SPACE);
 	ic->SetDashKey(SDL_SCANCODE_L);
-	ic->SetMaxJumpHeight(192.0f);
+	ic->SetMaxJumpHeight(288.0f);
 	ic->SetMass(1.0f);
-	ic->SetVelocityLimit(Vector2(400.0f, 400.0f));
+	ic->SetVelocityLimit(Vector2(400.0f, 600.0f));
 	ic->SetIsGravity(true);
 
 	mBoxComp = new BoxComponent(this);
@@ -55,10 +55,6 @@ Player::Player(Game* game)
 	mBoxComp->SetShouldRotate(false);
 
 	mAudioComp = new AudioComponent(this);
-	//mLastFootstep = 0.0f;
-	//mFootstep = mAudioComp->PlayEvent("event:/death");
-	//mFootstep.SetPaused(true);
-
 	mSoundDeath = mAudioComp->PlayEvent("event:/death");
 	mSoundDeath.SetPaused(true);
 
@@ -92,6 +88,7 @@ void Player::UpdateActor(float deltaTime)
 		else
 		{
 			SetActionState(ActionState::EJump);
+			ic->SetCanJump(false);
 		}
 
 		// アイテムとの当たり判定
@@ -178,6 +175,8 @@ void Player::UpdateActor(float deltaTime)
 				if (Math::Abs(dx) < Math::Abs(dy))
 				{
 					pos.x += dx;
+					Vector2 speed = ic->GetForwardSpeed();
+					ic->SetForwardSpeed(Vector2(0.0f, speed.y));
 				}
 				else
 				{
@@ -227,59 +226,61 @@ void Player::UpdateActor(float deltaTime)
 					mSoundDeath.SetPaused(false);
 					mSoundDeath.Restart();
 
-					GetGame()->stopBGM();
+					GetGame()->StopBGM();
+
+					mDeathCount = 1;
 				}
 			}
 		}
 
 		// ゴールとの当たり判定
-		class Goal* goal = GetGame()->GetGoal();
-		const AABB& playerBox = mBoxComp->GetWorldBox();
-		const AABB& goalBox = goal->GetBoxComp()->GetWorldBox();
-		if (Intersect(goalBox, playerBox))
+		if (GetGame()->GetScene() == Game::Scene::EMain)
 		{
-			// 当たり判定
-			Vector2 pos = GetPosition();
-
-			// 全ての差を計算する
-			float dx1 = goalBox.mMin.x - playerBox.mMax.x;
-			float dx2 = goalBox.mMax.x - playerBox.mMin.x;
-			float dy1 = goalBox.mMin.y - playerBox.mMax.y;
-			float dy2 = goalBox.mMax.y - playerBox.mMin.y;
-
-			// 絶対値の小さい方をセットする
-			float dx = (Math::Abs(dx1) < Math::Abs(dx2)) ? dx1 : dx2;
-			float dy = (Math::Abs(dy1) < Math::Abs(dy2)) ? dy1 : dy2;
-
-			// x/yのうち一番小さい軸で位置を調整
-			if (Math::Abs(dx) < Math::Abs(dy))
+			class Goal* goal = GetGame()->GetGoal();
+			const AABB& playerBox = mBoxComp->GetWorldBox();
+			const AABB& goalBox = goal->GetBoxComp()->GetWorldBox();
+			if (Intersect(goalBox, playerBox))
 			{
-				pos.x += dx;
-			}
-			else
-			{
-				pos.y += dy;
-			}
+				// 当たり判定
+				Vector2 pos = GetPosition();
 
-			// 位置を調整
-			SetPosition(pos);
-			mBoxComp->OnUpdateWorldTransform();
+				// 全ての差を計算する
+				float dx1 = goalBox.mMin.x - playerBox.mMax.x;
+				float dx2 = goalBox.mMax.x - playerBox.mMin.x;
+				float dy1 = goalBox.mMin.y - playerBox.mMax.y;
+				float dy2 = goalBox.mMax.y - playerBox.mMin.y;
 
-			SetActionState(ActionState::EGoal);
-			goal->SetActionState(ActionState::EWalk);
+				// 絶対値の小さい方をセットする
+				float dx = (Math::Abs(dx1) < Math::Abs(dx2)) ? dx1 : dx2;
+				float dy = (Math::Abs(dy1) < Math::Abs(dy2)) ? dy1 : dy2;
+
+				// x/yのうち一番小さい軸で位置を調整
+				if (Math::Abs(dx) < Math::Abs(dy))
+				{
+					pos.x += dx;
+				}
+				else
+				{
+					pos.y += dy;
+				}
+
+				// 位置を調整
+				SetPosition(pos);
+				mBoxComp->OnUpdateWorldTransform();
+
+				SetActionState(ActionState::EGoal);
+				goal->SetActionState(ActionState::EWalk);
+
+				GetGame()->StopBGM();
+			}
+		}
+
+		if (GetGame()->GetScene() == Game::Scene::EEnd)
+		{
+			SDL_Log("%.3f", GetPosition().x);
 		}
 
 	}
-
-	// Play the footstep if we're moving and haven't recently
-	//mLastFootstep -= deltaTime;
-	//if (!Math::NearZero(ic->GetForwardSpeed().x) && mLastFootstep <= 0.0f)
-	//{
-		//mFootstep.SetPaused(false);
-		//mFootstep.Restart();
-		//mLastFootstep = 0.5f;
-	//}
-
 
 
 
@@ -293,6 +294,15 @@ void Player::UpdateActor(float deltaTime)
 	}
 
 	mPrevPos = GetPosition();
+
+	if (mDeathCount >= 1)
+	{
+		mDeathCount++;
+		if (mDeathCount > 110)
+		{
+			GetGame()->RestartGame();
+		}
+	}
 }
 
 void Player::ActorInput(const uint8_t* keyState)

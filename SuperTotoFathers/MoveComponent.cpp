@@ -152,12 +152,9 @@ void MoveComponent::Update(float deltaTime)
 			mJumpPower = 0;
 			mIsJumping = false;
 			mCanJump = true;
-			//SDL_Log("ddddd");
 		}
 
 		mOwner->SetPosition(pos);
-
-		// SDL_Log("mCanJump : %d", mCanJump);
 	}
 }
 
@@ -165,3 +162,5 @@ void MoveComponent::AddForce(Vector2& force)
 {
 	mSumOfForces += force;
 }
+
+

@@ -1,3 +1,5 @@
+
+
 #include "TileMapComponent.h"
 #include "Actor.h"
 #include "Math.h"
@@ -44,7 +46,7 @@ void TileMapComponent::Draw(class Shader* shader, class VertexArray* vertex)
 		{
 			for (size_t x = tileX; x < tileX + MAP_WIDTH + 4; x++)
 			{
-				if (mMapDatas[j][y][x].verBeforeX == 0 && mMapDatas[j][y][x].verAfterX == 0)
+				if (mMapDatas[j][y][x].verBeforeX == 0.0f && mMapDatas[j][y][x].verAfterX == 0.0f)
 				{
 					continue;
 				}

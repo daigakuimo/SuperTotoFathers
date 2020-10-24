@@ -30,6 +30,12 @@ void GoalFlag::UpdateActor(float deltaTime)
 		else
 		{
 			SetPosition(Vector2(GetPosition().x, GetFirstFlagPosY() - 8.0f * 64.0f));
+			if (GetGame()->GetScene() == Game::Scene::EMain)
+			{
+				GetGame()->ChangeSceneToEnd();
+				GetGame()->StartEndingBGM();
+			}
+			
 		}
 	}
 }

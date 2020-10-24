@@ -21,8 +21,7 @@ private:
 	Vector2 mPrevPos;
 
 	class AudioComponent* mAudioComp;
-	// SoundEvent mFootstep;
-	// float mLastFootstep;
-
 	SoundEvent mSoundDeath;
+
+	int mDeathCount = 0;
 };

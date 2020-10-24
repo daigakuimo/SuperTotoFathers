@@ -6,6 +6,7 @@
 #include <sstream>
 #include <iostream>
 
+
 class StageManager : public Actor
 {
 public:
